@@ -18,16 +18,16 @@ pipeline {
         //         sh "docker rm nodewebapp"
         //     }
         // }
-        stage('docker build'){
-            steps {
-                sh "docker build -t ec2app . "
-                sh "docker images"
-            }
-        }
-        stage('docker Run & Deploy'){
-            steps {
-                sh "docker run -itd --name ec2app ec2app:latest &"  
-            }
-        }
+        // stage('docker build'){
+        //     steps {
+        //         sh "docker build -t ec2app . "
+        //         sh "docker images"
+        //     }
+        // }
+        // stage('docker Run & Deploy'){
+        //     steps {
+        //         sh "docker run -itd --name ec2app ec2app:latest &"  
+        //     }
+        // }
     }   
 }
