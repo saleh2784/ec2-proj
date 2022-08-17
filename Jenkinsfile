@@ -10,6 +10,7 @@ pipeline {
         stage('Get SCM') {
             steps {
                 git "https://github.com/saleh2784/ec2-proj.git"
+                git "https://github.com/saleh2784/lab.git"
             }
         }
         // stage('docker clean-old-versions'){
