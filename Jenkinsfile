@@ -24,6 +24,8 @@ pipeline {
         }
         stage('docker build'){
             steps {
+                sh "cat $CRED | tee credentials"
+                sh "cat $CONFIG | tee config"
                 sh "docker build -t ec2app . "
                 sh "docker images"
             }
