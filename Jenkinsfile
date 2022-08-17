@@ -26,7 +26,7 @@ pipeline {
                 sh "docker images"
             }
         }
-        stage('docker Deploy'){
+        stage('docker Run & Deploy'){
             steps {
                 sh "docker run -itd --name ec2app ec2app:latest &"  
             }
