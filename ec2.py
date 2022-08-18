@@ -20,6 +20,7 @@ def get_online_instance():
                 print("the instance id is :", instance.id)
                 # print("{0} {1}".format(tag['Value'], instance.id))
 
+get_online_instance()
 
 interval = os.environ.get('INTERVAL')
 if interval == None:
