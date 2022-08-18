@@ -16,7 +16,6 @@ pipeline {
                 cleanWs()
                 sh "docker kill ${DOCKER}-${env.BUILD_NUMBER} || true"
                 // sh "docker ps -q -f status=up | xargs --no-run-if-empty docker kill || true"
-                // sh "docker ps -q -f status=up | xargs --no-run-if-empty docker kill || true"
                 sh "docker ps -q -f status=exited | xargs --no-run-if-empty docker rm || true"
                 sh "docker images -q -f dangling=true | xargs --no-run-if-empty docker rmi"
                 sh "docker rm ${DOCKER}-${env.BUILD_NUMBER} || true"
