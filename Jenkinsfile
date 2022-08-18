@@ -25,7 +25,6 @@ pipeline {
         stage('Get SCM') {
             steps {
                 git branch: 'main', url: 'https://github.com/saleh2784/ec2-proj.git'
-                // git "https://github.com/saleh2784/ec2-proj.git"
             }
         }
         stage('docker build'){
@@ -45,5 +44,5 @@ pipeline {
 }
 
 
-// https://github.com/ranazrad/machineScanner
+// used for reference:  https://github.com/ranazrad/machineScanner
 
