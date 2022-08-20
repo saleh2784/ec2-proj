@@ -73,7 +73,7 @@ pipeline {
 		stage('Push the image to DockerHub') {
 
 			steps {
-			    sh 'docker tag ${DOCKER}-${env.BUILD_NUMBER}:latest saleh2784/${DOCKER}:latest '
+			    sh 'docker tag ${DOCKER}-${env.BUILD_NUMBER}:latest saleh2784/${DOCKER}:latest'
 				sh 'docker push saleh2784/${DOCKER}:latest'
 				// to download the image from the dockerhub run this command below :
 				// docker pull saleh2784/ec2app:tagname
@@ -82,6 +82,7 @@ pipeline {
     }
 	post {
         always {
+            // Removing login credentials
 		    sh 'docker logout'
 		}
     }
