@@ -22,8 +22,13 @@ pipeline {
             steps {
                 // cleanWs()
                 // NTC {env.BUILD_NUMBER} =! previous BUILD_NUMBER (env.previous.BUILD_NUMBER)
+<<<<<<< Updated upstream
                 // kill old containers 
                 sh "docker kill ${DOCKER} || true"
+=======
+                // kill old containers  //
+                sh "docker kill ${DOCKER}:${TAG} || true"
+>>>>>>> Stashed changes
                 // Removing exited containers
                 sh "docker ps -q -f status=exited | xargs --no-run-if-empty docker rm || true"
                 //docker delete none tag images
