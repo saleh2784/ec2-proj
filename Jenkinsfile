@@ -21,7 +21,7 @@ pipeline {
         stage('Initialize') {
             steps {
                 // cleanWs()
-                // NTC {env.BUILD_NUMBER} =! previous BUILD_NUMBER (env.previous.BUILD_NUMBER)
+                // NTC {env.BUILD_NUMBER} =! previous BUILD_NUMBER (env.previous.BUILD_NUMBER) //
                 // kill old containers 
                 sh "docker kill ${DOCKER} || true"
                 // Removing exited containers
