@@ -4,9 +4,7 @@
 # create pipeline deckartive
 # put the pipeline as Jenkinsfile in github
 # github wehbook
-
 # branch (DEV / PROD) --- The above setup should allow you to run two Jenkins servers (DEV / PROD) where you can tests , upgrade and update your Jenkins dev env before you merge your changes into MAIN
-
 # $JENKINSBUILDNUMBER --- -	Use jenkins to run your build on every push under branch development. Mark every image created with the number of the $JENKINSBUILDNUMBER. For example:yanivomc/k8stest:JENKINSBUILDNUMBER
 
 # Create a manual step that depends on all build steps before it allows you to deploy your application to your local DOCKER Engine (by running docker stop , pull , run ) 
@@ -18,4 +16,6 @@
 
 
 
+
+NTC how to use readfile for the tag.txt
 
