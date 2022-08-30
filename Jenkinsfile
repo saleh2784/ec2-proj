@@ -68,24 +68,24 @@ pipeline {
 
             }
         }
-    post {
-        always {
-            echo 'One way or another, I have finished'
-            sh"docker ${DOCKER}:${TAG} logs"
-        success {
-            echo 'I succeeded!'
-        }
-        unstable {
-            echo 'I am unstable :/'
-        }
-        failure {
-            echo 'I failed :('
-        }
-        changed {
-            echo 'Things were different before...'
+        post {
+            always {
+                echo 'One way or another, I have finished'
+                sh "docker ${DOCKER}:${TAG} logs"
+            success {
+                echo 'I succeeded!'
+            }
+            unstable {
+                echo 'I am unstable :/'
+            }
+            failure {
+                echo 'I failed :('
+            }
+            changed {
+                echo 'Things were different before...'
+                }
             }
         }
-    }
 
         stage('DockerHub Login') {
 
