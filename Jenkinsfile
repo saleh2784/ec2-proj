@@ -94,15 +94,11 @@ pipeline {
 	post {
         always {
             // docker logout 
+            sh "docker ${DOCKER}:${TAG} logs"
 		    sh 'docker logout'
 		}
     }
-    post {
-        always {
-            echo 'One way or another, I have finished'
-            sh "docker ${DOCKER}:${TAG} logs"
-        }
-    }
+
 }
 
 // used for reference:  https://github.com/ranazrad/machineScanner
