@@ -17,7 +17,7 @@ pipeline {
             steps {
                 script {
                     // echo ${PUSH-TAG}
-                    print "my Build number is : ${BUILD_NUMBER}"
+                    echo "my Build number is : ${BUILD_NUMBER}"
                 }
             }
         }
