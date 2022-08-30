@@ -17,7 +17,7 @@ pipeline {
             steps {
                 script {
                     // echo ${PUSH-TAG}
-                    print(BUILD_NUMBER)
+                    print "my Build number is : ${BUILD_NUMBER}"
                 }
             }
         }
@@ -69,7 +69,6 @@ pipeline {
                 // running the container with the Inteval time and with the build number (the name of the container include the build number)
                 // sh "docker run -itd --name ${DOCKER} --env INTERVAL=${params.INTERVAL} ${DOCKER}:${TAG}.${BUILD_NUMBER}" 
                 sh "docker run -itd --name ${DOCKER} --env INTERVAL=${params.INTERVAL} ${DOCKER}:${TAG}" 
-
                 // sh "docker run -itd --name saleh2784/${DOCKER}-${env.BUILD_NUMBER}:${tagname} --env INTERVAL=${params.INTERVAL} saleh2784/${DOCKER}-${env.BUILD_NUMBER} &"  
 
             }
@@ -92,6 +91,7 @@ pipeline {
 				sh 'docker push saleh2784/${DOCKER}:${TAG}.${BUILD_NUMBER}'
 				// to download the image from the dockerhub run this command below :
 				// docker pull saleh2784/ec2app:tagname
+                echo " my bushed image name is : ${DOCKER}:${TAG}.${BUILD_NUMBER}"
 			}
 		}
     }
