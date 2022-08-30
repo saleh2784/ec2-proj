@@ -68,7 +68,7 @@ pipeline {
 
             }
         }
-        post {
+    post {
         always {
             echo 'One way or another, I have finished'
             sh"docker ${DOCKER}:${TAG} logs"
@@ -83,9 +83,9 @@ pipeline {
         }
         changed {
             echo 'Things were different before...'
-                }
             }
         }
+    }
 
         stage('DockerHub Login') {
 
