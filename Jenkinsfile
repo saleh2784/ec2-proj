@@ -68,12 +68,6 @@ pipeline {
 
             }
         }
-    post {
-        always {
-            echo 'One way or another, I have finished'
-            sh "docker ${DOCKER}:${TAG} logs"
-        }
-    }
         stage('DockerHub Login') {
 
 			steps {
@@ -102,6 +96,12 @@ pipeline {
             // docker logout 
 		    sh 'docker logout'
 		}
+    }
+    post {
+        always {
+            echo 'One way or another, I have finished'
+            sh "docker ${DOCKER}:${TAG} logs"
+        }
     }
 }
 
