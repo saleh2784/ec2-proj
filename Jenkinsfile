@@ -30,13 +30,16 @@ pipeline {
                 // kill old containers 
                 sh "docker kill ${DOCKER} || true"
                 // Removing exited containers
-                sh "docker ps -q -f status=exited | xargs --no-run-if-empty docker rm || true"
+                sh "docker rmi -f $(docker images '${DOCKER}' -a -q)"
+                // sh "docker ps -q -f status=exited | xargs --no-run-if-empty docker rm || true"
                 //docker delete none tag images
                 sh "docker images -q -f dangling=true | xargs --no-run-if-empty docker rmi"
                 // Removing old containers !!!!
                 sh "docker rm ${DOCKER} || true"
                 //delete old images !!!!
-                sh "docker rmi -f ${DOCKER} || true"
+                // sh "docker rmi -f ${DOCKER} || true"
+                sh "docker rmi -f $(docker images '${DOCKER}' -a -q)"
+
             }
         }
         stage('Get SCM') {
