@@ -38,7 +38,7 @@ pipeline {
                 sh "docker rm ${DOCKER} || true"
                 //delete old images !!!!
                 // sh "docker rmi -f ${DOCKER} || true"
-                sh "docker rmi -f $(docker images '${DOCKER}' -a -q)"
+                // sh "docker images rmi -f -a -q ${DOCKER} | true "
 
             }
         }
