@@ -16,7 +16,6 @@ pipeline {
         stage('Print Build Number') {
             steps {
                 script {
-                    // echo ${PUSH-TAG}
                     echo "my Build number is : ${BUILD_NUMBER}"
                 }
             }
@@ -29,7 +28,7 @@ pipeline {
                 sh "docker kill ${DOCKER}:${TAG} || true"
                 // Removing exited containers 
                 sh "docker ps -q -f status=exited | xargs --no-run-if-empty docker rm || true"
-                //delete old images 
+                //delete old images unused 
                 sh 'docker image prune -fa || true'
 
             }
@@ -42,6 +41,7 @@ pipeline {
         stage('read file config') {
            steps {
                script {
+                // read the tag version from the tag.txt
                    def tag  = readFile(file: 'tag.txt')
                    println(tag)
                }
@@ -54,12 +54,8 @@ pipeline {
                 sh "cat $CONFIG | tee config"
                 
                 // build the image from the Dockerfile
-                // sh "docker build -t ${DOCKER}:${TAG}.${BUILD_NUMBER} . "
                 sh "docker build -t ${DOCKER}:${TAG} . "
 
-                
-                // sh "docker build -t saleh2784/${DOCKER}-${env.BUILD_NUMBER}:${tagname} . "
-                //sh 'docker build -t bharathirajatut/nodeapp:latest .'
                 // view the docker images
                 sh "docker images"
             }
@@ -67,7 +63,6 @@ pipeline {
         stage('docker Run & Deploy'){
             steps {
                 // running the container with the Inteval time and with the build number (the name of the container include the build number)
-                // sh "docker run -itd --name ${DOCKER} --env INTERVAL=${params.INTERVAL} ${DOCKER}:${TAG}.${BUILD_NUMBER}" 
                 sh "docker run -itd --name ${DOCKER} --env INTERVAL=${params.INTERVAL} ${DOCKER}:${TAG}" 
                 // sh "docker run -itd --name saleh2784/${DOCKER}-${env.BUILD_NUMBER}:${tagname} --env INTERVAL=${params.INTERVAL} saleh2784/${DOCKER}-${env.BUILD_NUMBER} &"  
 
@@ -85,18 +80,20 @@ pipeline {
 
 			steps {
 			    echo "${DOCKER}:${TAG}.${BUILD_NUMBER}"
-			    // sh 'docker tag ${DOCKER}:${TAG}.${BUILD_NUMBER} saleh2784/${DOCKER}:${TAG}.${BUILD_NUMBER}'
+                // docker tag from the local repo
                 sh 'docker tag ${DOCKER}:${TAG} saleh2784/${DOCKER}:${TAG}.${BUILD_NUMBER}'
-			    // local image , new image with the new tag
+			    // push the image with the Build_number to docker-hub
 				sh 'docker push saleh2784/${DOCKER}:${TAG}.${BUILD_NUMBER}'
-				// to download the image from the dockerhub run this command below :
-				// docker pull saleh2784/ec2app:tagname
-                echo " my bushed image name is : ${DOCKER}:${TAG}.${BUILD_NUMBER}"
+                // echo the name of the image that i push to docker-hub 
+                echo " my bushe image name is : ${DOCKER}:${TAG}.${BUILD_NUMBER}"
+				// to download the image from the dockerhub run this command : "docker pull saleh2784/ec2app:tagname.build_number"
+               
 			}
 		}
     }
 	post {
         always {
+            // docker logout 
 		    sh 'docker logout'
 		}
     }
