@@ -83,8 +83,10 @@ pipeline {
         }
         changed {
             echo 'Things were different before...'
+                }
+            }
         }
-    }
+
         stage('DockerHub Login') {
 
 			steps {
