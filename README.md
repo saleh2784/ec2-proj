@@ -3,7 +3,7 @@
 # create Dcokerfile 
 # create pipeline deckartive
 # put the pipeline as Jenkinsfile in github
-# github wehbooks was set
+# github wehbooks 
 # branch (DEV / PROD) --- The above setup should allow you to run two Jenkins servers (DEV / PROD) where you can tests , upgrade and update your Jenkins dev env before you merge your changes into MAIN
 # $JENKINSBUILDNUMBER --- -	Use jenkins to run your build on every push under branch development. Mark every image created with the number of the $JENKINSBUILDNUMBER. For example:yanivomc/k8stest:JENKINSBUILDNUMBER
 # Create a manual step that depends on all build steps before it allows you to deploy your application to your local DOCKER Engine (by running docker stop , pull , run ) 
@@ -33,13 +33,6 @@ How to run the Pipeline:
 8. in Build Triggers mark "GitHub hook trigger for GITScm polling" 
 9. go to the repo : https://github.com/saleh2784/ec2-proj.git & replace the tag number in tag.txt that you want for example : 3.1
 10. run the pipeline 
-
-
-
-NTC a & b : 
-
-# a.	Find a way to Validate that your application is indeed running and if it failed … Rollback to previous version (in place upgrade)
-# b.	If validated push image to docker repo
 
 
 
