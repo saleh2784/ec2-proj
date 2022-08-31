@@ -99,5 +99,3 @@ pipeline {
     }
 
 }
-
-// used for reference:  https://github.com/ranazrad/machineScanner
