@@ -94,7 +94,6 @@ pipeline {
 	post {
         always {
             // docker logout 
-            sh "docker logs ${DOCKER}"
 		    sh 'docker logout'
 		}
     }
