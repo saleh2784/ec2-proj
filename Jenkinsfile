@@ -4,7 +4,6 @@ pipeline {
         string(name: 'INTERVAL', defaultValue: '300' )
         string(name: 'BRANCH', defaultValue: 'main' )
 
-
     }
     environment {
         CRED = credentials('credentials')
@@ -39,7 +38,7 @@ pipeline {
         }
         stage('Get SCM') {
             steps {
-                git branch: ${params.BRANCH}, url: 'https://github.com/saleh2784/ec2-proj.git'
+                git branch: "${params.BRANCH}", url: 'https://github.com/saleh2784/ec2-proj.git'
             }
         }
         stage('read file config') {
