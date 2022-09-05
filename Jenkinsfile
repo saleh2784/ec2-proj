@@ -83,7 +83,7 @@ pipeline {
                 // docker tag from the local repo
                 sh 'docker tag ${DOCKER}:${TAG} saleh2784/${DOCKER}:${TAG}.${BUILD_NUMBER}'
 			    // push the image with the Build_number to docker-hub
-				sh 'docker push saleh2784/${DOCKER}:${TAG}.${BUILD_NUMBER}'
+				sh (script : "docker push saleh2784/${DOCKER}:${TAG}.${BUILD_NUMBER}", returnStdout: false)
                 // echo the name of the image that i push to docker-hub 
                 echo " my bushe image name is : ${DOCKER}:${TAG}.${BUILD_NUMBER}"
 				// to download the image from the dockerhub run this command : "docker pull saleh2784/ec2app:tagname.build_number"
