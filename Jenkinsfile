@@ -42,6 +42,7 @@ pipeline {
                 git branch: "${params.branch}", url: 'https://github.com/saleh2784/ec2-proj.git'
             }
         }
+    // it's working but i prefer to use Tag parameter to set the tag in the jenkins instead of to update this file 
     //     stage('read file config') {
     //        steps {
     //            script {
