@@ -54,7 +54,8 @@ pipeline {
                 sh "cat $CONFIG | tee config"
                 
                 // build the image from the Dockerfile
-                sh "docker build -t ${DOCKER}:${TAG} . "
+                sh (script: "docker build -t ${DOCKER}:${TAG} . ", returnStdout: true)
+                // sh "docker build -t ${DOCKER}:${TAG} . "
 
                 // view the docker images
                 sh "docker images"
@@ -85,7 +86,7 @@ pipeline {
 			    // push the image with the Build_number to docker-hub
 				sh (script : "docker push saleh2784/${DOCKER}:${TAG}.${BUILD_NUMBER}", returnStdout: false)
                 // echo the name of the image that i push to docker-hub 
-                echo " my bushe image name is : ${DOCKER}:${TAG}.${BUILD_NUMBER}"
+                echo " my push image name is : ${DOCKER}:${TAG}.${BUILD_NUMBER}"
 				// to download the image from the dockerhub run this command : "docker pull saleh2784/ec2app:tagname.build_number"
                
 			}
