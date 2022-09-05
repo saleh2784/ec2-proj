@@ -64,7 +64,7 @@ pipeline {
         stage('docker Run & Deploy'){
             steps {
                 // running the container with the Inteval time and with the build number (the name of the container include the build number)
-                sh "docker run -itd --name ${DOCKER} --env INTERVAL=${params.INTERVAL} ${DOCKER}:${TAG}" 
+                sh (script : "docker run -itd --name ${DOCKER} --env INTERVAL=${params.INTERVAL} ${DOCKER}:${TAG}", returnStdout: true  )
                 // sh "docker run -itd --name saleh2784/${DOCKER}-${env.BUILD_NUMBER}:${tagname} --env INTERVAL=${params.INTERVAL} saleh2784/${DOCKER}-${env.BUILD_NUMBER} &"  
 
             }
