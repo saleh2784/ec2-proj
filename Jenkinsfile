@@ -3,13 +3,15 @@ pipeline {
     parameters {
         string(name: 'INTERVAL', defaultValue: '300' )
         choice choices: ['main', 'DEV', 'PROD'], name: 'branch'
+        string(name: 'TAG', defaultValue: '1' )
+
     }
     environment {
         CRED = credentials('credentials')
         CONFIG = credentials('config')
         DOCKER = 'ec2app'
         DOCKERHUB_CREDENTIALS = credentials('docker-hub')
-        int TAG = readFile(file: 'tag.txt')
+        // int TAG = readFile(file: 'tag.txt')
         
     }
 
@@ -26,7 +28,7 @@ pipeline {
             steps {
                 cleanWs()
                 // kill old containers !!!
-                sh "docker kill ${DOCKER}:${TAG} || true"
+                sh "docker kill ${DOCKER}:${params.TAG} || true"
                 // Removing exited containers 
                 sh "docker ps -q -f status=exited | xargs --no-run-if-empty docker rm || true"
                 //delete old images 
@@ -40,15 +42,15 @@ pipeline {
                 git branch: "${params.branch}", url: 'https://github.com/saleh2784/ec2-proj.git'
             }
         }
-        stage('read file config') {
-           steps {
-               script {
-                // read the tag version from the tag.txt
-                   def tag  = readFile(file: 'tag.txt')
-                   println(tag)
-               }
-           }
-       }
+    //     stage('read file config') {
+    //        steps {
+    //            script {
+    //             // read the tag version from the tag.txt
+    //                def tag  = readFile(file: 'tag.txt')
+    //                println(tag)
+    //            }
+    //        }
+    //    }
         stage('docker build'){
             steps {
                 // get the .aws credentials & config to use them in the container
@@ -56,7 +58,7 @@ pipeline {
                 sh "cat $CONFIG | tee config"
                 
                 // build the image from the Dockerfile
-                sh (script: "docker build -t ${DOCKER}:${TAG} . ", returnStdout: true)
+                sh (script: "docker build -t ${DOCKER}:${params.TAG} . ", returnStdout: true)
                 // sh "docker build -t ${DOCKER}:${TAG} . "
 
                 // view the docker images
@@ -66,7 +68,7 @@ pipeline {
         stage('docker Run & Deploy'){
             steps {
                 // running the container with the Inteval time and with the build number (the name of the container include the build number)
-                sh (script : "docker run -itd --name ${DOCKER} --env INTERVAL=${params.INTERVAL} ${DOCKER}:${TAG}", returnStdout: true  )
+                sh (script : "docker run -itd --name ${DOCKER} --env INTERVAL=${params.INTERVAL} ${DOCKER}:${params.TAG}", returnStdout: true  )
                 // sh "docker run -itd --name saleh2784/${DOCKER}-${env.BUILD_NUMBER}:${tagname} --env INTERVAL=${params.INTERVAL} saleh2784/${DOCKER}-${env.BUILD_NUMBER} &"  
 
             }
@@ -84,11 +86,11 @@ pipeline {
 			steps {
 			    echo "${DOCKER}:${TAG}.${BUILD_NUMBER}"
                 // docker tag from the local repo
-                sh 'docker tag ${DOCKER}:${TAG} saleh2784/${DOCKER}:${TAG}.${BUILD_NUMBER}'
+                sh """docker tag ${DOCKER}:${params.TAG} saleh2784/${DOCKER}:${params.TAG}.${BUILD_NUMBER}"""
 			    // push the image with the Build_number to docker-hub
-				sh (script : "docker push saleh2784/${DOCKER}:${TAG}.${BUILD_NUMBER}", returnStdout: false)
+				sh (script : """docker push saleh2784/${DOCKER}:${params.TAG}.${BUILD_NUMBER}""", returnStdout: false)
                 // echo the name of the image that i push to docker-hub 
-                echo " my push image name is : ${DOCKER}:${TAG}.${BUILD_NUMBER}"
+                echo " my push image name is : ${DOCKER}:${params.TAG}.${BUILD_NUMBER}"
 				// to download the image from the dockerhub run this command : "docker pull saleh2784/ec2app:tagname.build_number"
                
 			}

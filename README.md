@@ -32,7 +32,11 @@ How to run the Pipeline:
 7. in the script patch = Jenkinsfile
 8. in Build Triggers mark "GitHub hook trigger for GITScm polling" 
 9. go to the repo : https://github.com/saleh2784/ec2-proj.git & replace the tag number in tag.txt that you want for example : 3.1
-10. run the pipeline 
+10. Run the pipeline with parameters
+11. Enter the INTERVAL "defualt 300"
+12. Choose the branch ('main', 'DEV', 'PROD') "defualt main"
+13. Enter the tag "defualt 1"
+
 
 
 
