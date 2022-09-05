@@ -38,6 +38,11 @@ pipeline {
             }
         }
         stage('Get SCM') {
+            when {
+                expression{
+                    branch '${params.branch}'
+                }
+            }
             steps {
                 git branch: "${params.branch}", url: 'https://github.com/saleh2784/ec2-proj.git'
             }
