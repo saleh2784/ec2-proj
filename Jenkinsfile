@@ -29,7 +29,7 @@ pipeline {
                 // Removing exited containers 
                 sh "docker ps -q -f status=exited | xargs --no-run-if-empty docker rm || true"
                 //delete old images 
-                sh (script: "docker images | grep ec2app | awk '{print $1 ":" $2}' | xargs docker rmi -f" || true)
+                sh (script: "docker images | grep ec2app | xargs docker rmi -f" || true)
                 sh 'docker image prune -fa || true'
 
 
