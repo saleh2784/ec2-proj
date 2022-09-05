@@ -39,7 +39,7 @@ pipeline {
         }
         stage('Get SCM') {
             steps {
-                git branch: ${BRANCH}, url: 'https://github.com/saleh2784/ec2-proj.git'
+                git branch: ${params.BRANCH}, url: 'https://github.com/saleh2784/ec2-proj.git'
             }
         }
         stage('read file config') {
