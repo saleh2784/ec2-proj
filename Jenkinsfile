@@ -23,7 +23,13 @@ pipeline {
                 }
             }
         }
- 
+        stage('Print Tofiq') {
+            steps {
+                script {
+                    echo "Hi Tofiq"
+                }
+            }
+        }
         stage('Initialize') {
             steps {
                 cleanWs()
