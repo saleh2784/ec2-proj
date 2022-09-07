@@ -16,7 +16,7 @@ b. Pipeline Utility Steps
 c. Workspace Cleanup
 
 2. Manage Credentials :
-how to run the app :
+
 a. config file for ec2 
 b. credentials file for ec2 
 c. dockerhube credenyials (user name & secret key) 
@@ -35,7 +35,4 @@ How to run the Pipeline:
 10. Enter the INTERVAL "defualt 300"
 11. Choose the branch ('main', 'DEV', 'PROD') "defualt main"
 12. Enter the tag "defualt 1"
-
-
-
-
+13. Run the pipeline
