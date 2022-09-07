@@ -1,7 +1,7 @@
 # ec2-proj
 # create ec2.py code 
 # create Dcokerfile 
-# create pipeline deckartive
+# create pipeline Declarative
 # put the pipeline as Jenkinsfile in github
 # github wehbooks 
 # branch (DEV / PROD) --- The above setup should allow you to run two Jenkins servers (DEV / PROD) where you can tests , upgrade and update your Jenkins dev env before you merge your changes into MAIN
