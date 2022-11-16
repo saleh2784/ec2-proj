@@ -130,8 +130,7 @@ pipeline {
                 sh '''
                     git add .
                     git commit -m "push to git"
-                    // git push https://${GIT_CREDS_USR}:${GIT_CREDS_PSW}@bitbucket.org/<your repo>.git <branch>
-                    git push https://github.com/saleh2784/ec2-proj.git main
+                    git push https://saleh2784@gmail.com/ec2-proj.git main
                 '''
             }
         }
