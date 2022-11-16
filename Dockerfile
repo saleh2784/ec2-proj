@@ -10,8 +10,8 @@ WORKDIR /home/${USER}
 COPY . . 
 # create .aws filder and move the config & credentials from the jenkins credentials inside it & install the pip requirments (boto3) 
 RUN mkdir /home/${USER}/.aws && \
-    mv config /home/${USER}/.aws && \
-    mv credentials /home/${USER}/.aws && \
+    # mv config /home/${USER}/.aws && \
+    # mv credentials /home/${USER}/.aws && \
     pip install -r requirements.txt
 # run the app 
 CMD ["python", "ec2.py"]
