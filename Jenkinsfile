@@ -123,18 +123,18 @@ pipeline {
                 
 		// 	}
 		// }
-        stage('Git Push to Main'){
-        steps{
-            script{
-                // GIT_CREDS = credentials(<git creds id>)
-                sh '''
-                    git add .
-                    git commit -m "push to git"
-                    git push https://saleh2784@gmail.com/ec2-proj.git main
-                '''
-            }
-        }
-    }
+    //     stage('Git Push to Main'){
+    //     steps{
+    //         script{
+    //             // GIT_CREDS = credentials(<git creds id>)
+    //             sh '''
+    //                 git add .
+    //                 git commit -m "push to git"
+    //                 git push https://saleh2784@gmail.com/ec2-proj.git main
+    //             '''
+    //         }
+    //     }
+    // }
 
     }
 	post {
