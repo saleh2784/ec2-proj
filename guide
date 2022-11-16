@@ -1,0 +1,30 @@
+kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yam
+
+helm create [chart-name]
+
+helm upgrade --install [RELEASE NAME] [path to Chart.yaml]
+
+i.e.
+helm upgrade --install my-test-chart /Users/Desktop/MyChart/
+
+helm install lab .
+
+cat values.yaml | yq eval -i 'image.tag' = ${params.TAG}.${BUILD_NUMBER}
+
+pipeline {
+
+stage ('build image') {
+	sh """
+	docker build .
+	--- produced image ----.....
+	
+	wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/bin/yq &&\
+    chmod +x /usr/bin/yq
+	
+	cat values.yaml | yq eval -i  'image.tag' = $JENKINSBUILDNUMBER
+
+	
+	
+	"""
+	}
+}
