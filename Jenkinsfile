@@ -58,7 +58,7 @@ pipeline {
 			    // need to check the path for the helm ## /home/jenkins/workspace/ec2/helm-lab
                 dir('/home/jenkins/workspace/ec2/helm-lab/') {
                 sh (script : """ cat values.yaml """)
-                sh (script : """ yq -i '.image.tag' = "${params.TAG}.${BUILD_NUMBER}" values.yaml """, returnStdout: false)
+                // sh (script : """ yq -i '.image.tag' = "${params.TAG}.${BUILD_NUMBER}" values.yaml """, returnStdout: false)
                 // sh (script : """ sed -i "s@#tag=.*@tag=${params.TAG}.${BUILD_NUMBER}@" values.yaml """, returnStdout: false)             
                 }
                 // sh (script : """ echo /home/jenkins/workspace/ec2/helm-lab/values.yaml """)
