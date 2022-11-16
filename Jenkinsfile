@@ -60,8 +60,8 @@ pipeline {
         stage('docker build'){
             steps {
                 // get the .aws credentials & config to use them in the container
-                sh "cat $CRED | tee credentials"
-                sh "cat $CONFIG | tee config"
+                // sh "cat $CRED | tee credentials"
+                // sh "cat $CONFIG | tee config"
                 
                 // build the image from the Dockerfile
                 sh (script: "docker build -t ${DOCKER}:${params.TAG} . ", returnStdout: true)

@@ -19,7 +19,7 @@ c. Workspace Cleanup
 
 a. config file for ec2 
 b. credentials file for ec2 
-c. dockerhube credenyials (user name & secret key) 
+c. dockerhube credentials (user name & secret key) 
 
 How to run the Pipeline: 
 
