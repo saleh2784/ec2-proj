@@ -50,14 +50,19 @@ pipeline {
         stage('helm') {
             
 			steps {
+                script {
+                    if (fileExists('/home/jenkins/workspace/ec2/helm-lab/values.yaml') {
+                        echo "File /home/jenkins/workspace/ec2/helm-lab/values.yaml found!"
+                    }
+                }
 			   
-                // install yq
-                sh (script : """ apt install wget -y""", returnStdout: false)
-                sh (script : """wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/bin/yq &&\
-                chmod +x /usr/bin/yq""", returnStdout: false)
-			    // need to check the path for the helm ## /home/jenkins/workspace/ec2/helm-lab
-                sh (script : """ echo /home/jenkins/workspace/ec2/helm-lab/values.yaml """)
-				sh (script : """cat ./helm-lab/values.yaml | yq eval -i 'image.tag' = ${params.TAG}.${BUILD_NUMBER}""", returnStdout: false)
+                // // install yq
+                // sh (script : """ apt install wget -y""", returnStdout: false)
+                // sh (script : """wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/bin/yq &&\
+                // chmod +x /usr/bin/yq""", returnStdout: false)
+			    // // need to check the path for the helm ## /home/jenkins/workspace/ec2/helm-lab
+                // sh (script : """ echo /home/jenkins/workspace/ec2/helm-lab/values.yaml """)
+				// sh (script : """cat ./helm-lab/values.yaml | yq eval -i 'image.tag' = ${params.TAG}.${BUILD_NUMBER}""", returnStdout: false)
                 
 			}
 		}
