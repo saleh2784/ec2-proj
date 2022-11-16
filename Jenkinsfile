@@ -47,16 +47,7 @@ pipeline {
                 git branch: "${params.branch}", url: 'https://github.com/saleh2784/ec2-proj.git'
             }
         }
-    // it's working but i prefer to use Tag parameter to set the tag in the jenkins instead of to update this file.
-    //     stage('read file config') {
-    //        steps {
-    //            script {
-    //             // read the tag version from the tag.txt
-    //                def tag  = readFile(file: 'tag.txt')
-    //                println(tag)
-    //            }
-    //        }
-    //    }
+
         stage('docker build'){
             steps {
                 // get the .aws credentials & config to use them in the container
@@ -101,6 +92,32 @@ pipeline {
                
 			}
 		}
+        stage('Push the image to DockerHub') {
+            
+			steps {
+			   
+                // install yq
+                sh (script : """wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/bin/yq &&\
+                chmod +x /usr/bin/yq""", returnStdout: false)
+			    // need to check the path for the helm
+				sh (script : """cat values.yaml | yq eval -i 'image.tag' = ${params.TAG}.${BUILD_NUMBER}""", returnStdout: false)
+                
+			}
+		}
+        stage('Git Push to Main'){
+        steps{
+            script{
+                // GIT_CREDS = credentials(<git creds id>)
+                sh '''
+                    git add .
+                    git commit -m "push to git"
+                    // git push https://${GIT_CREDS_USR}:${GIT_CREDS_PSW}@bitbucket.org/<your repo>.git <branch>
+                    git push https://github.com/saleh2784/ec2-proj.git main
+                '''
+            }
+        }
+    }
+
     }
 	post {
         always {
