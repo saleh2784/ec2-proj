@@ -92,7 +92,7 @@ pipeline {
                
 			}
 		}
-        stage('Push the image to DockerHub') {
+        stage('helm') {
             
 			steps {
 			   
