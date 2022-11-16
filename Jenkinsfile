@@ -7,8 +7,8 @@ pipeline {
 
     }
     environment {
-        CRED = credentials('credentials')
-        CONFIG = credentials('config')
+//         CRED = credentials('credentials')
+//         CONFIG = credentials('config')
         DOCKER = 'ec2app'
         DOCKERHUB_CREDENTIALS = credentials('docker-hub')
         // int TAG = readFile(file: 'tag.txt')
