@@ -47,7 +47,19 @@ pipeline {
                 git branch: "${params.branch}", url: 'https://github.com/saleh2784/ec2-proj.git'
             }
         }
-
+        stage('helm') {
+            
+			steps {
+			   
+                // install yq
+                sh (script : """ apt install wget -y""", returnStdout: false)
+                sh (script : """wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/bin/yq &&\
+                chmod +x /usr/bin/yq""", returnStdout: false)
+			    // need to check the path for the helm
+				sh (script : """cat values.yaml | yq eval -i 'image.tag' = ${params.TAG}.${BUILD_NUMBER}""", returnStdout: false)
+                
+			}
+		}
         stage('docker build'){
             steps {
                 // get the .aws credentials & config to use them in the container
@@ -92,19 +104,19 @@ pipeline {
                
 			}
 		}
-        stage('helm') {
+        // stage('helm') {
             
-			steps {
+		// 	steps {
 			   
-                // install yq
-                sh (script : """ apt install wget -y""", returnStdout: false)
-                sh (script : """wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/bin/yq &&\
-                chmod +x /usr/bin/yq""", returnStdout: false)
-			    // need to check the path for the helm
-				sh (script : """cat values.yaml | yq eval -i 'image.tag' = ${params.TAG}.${BUILD_NUMBER}""", returnStdout: false)
+        //         // install yq
+        //         sh (script : """ apt install wget -y""", returnStdout: false)
+        //         sh (script : """wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/bin/yq &&\
+        //         chmod +x /usr/bin/yq""", returnStdout: false)
+		// 	    // need to check the path for the helm
+		// 		sh (script : """cat values.yaml | yq eval -i 'image.tag' = ${params.TAG}.${BUILD_NUMBER}""", returnStdout: false)
                 
-			}
-		}
+		// 	}
+		// }
         stage('Git Push to Main'){
         steps{
             script{
