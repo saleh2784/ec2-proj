@@ -52,18 +52,17 @@ pipeline {
 			steps {
 			   
                 // install yq
-                // sh (script : """ apt install wget -y""", returnStdout: false)
-                // sh (script : """wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/bin/yq &&\
-                // chmod +x /usr/bin/yq""", returnStdout: false)
+                sh (script : """ apt install wget -y""", returnStdout: false)
+                sh (script : """wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/bin/yq &&\
+                chmod +x /usr/bin/yq""", returnStdout: false)
 			    // need to check the path for the helm ## /home/jenkins/workspace/ec2/helm-lab
                 dir('/home/jenkins/workspace/ec2/helm-lab/') {
                 sh (script : """ cat values.yaml """)
-                // sh (script : """ yq -i '.image.tag' = "${params.TAG}.${BUILD_NUMBER}" values.yaml """, returnStdout: false)
-                // sh (script : """ sed -i "s@#tag=.*@tag=${params.TAG}.${BUILD_NUMBER}@" values.yaml """, returnStdout: false)             
+                // sh (script : """ yq -i 'image.tag' = "${params.TAG}.${BUILD_NUMBER}" values.yaml """, returnStdout: false)
+                sh (script : """ yq -i \'.image.tag = \"${params.TAG}.${BUILD_NUMBER}\"\' values.yaml """, returnStdout: false)
+                sh (script : """ cat values.yaml """)
                 }
-                // sh (script : """ echo /home/jenkins/workspace/ec2/helm-lab/values.yaml """)
-				// sh (script : """ cat ./helm-lab/values.yaml | yq eval -i 'image.tag' = ${params.TAG}.${BUILD_NUMBER}""", returnStdout: false)
-                
+               
 			}
 		}
         stage('docker build'){
@@ -110,31 +109,21 @@ pipeline {
                
 			}
 		}
-        // stage('helm') {
-            
-		// 	steps {
-			   
-        //         // install yq
-        //         sh (script : """ apt install wget -y""", returnStdout: false)
-        //         sh (script : """wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/bin/yq &&\
-        //         chmod +x /usr/bin/yq""", returnStdout: false)
-		// 	    // need to check the path for the helm
-		// 		sh (script : """cat values.yaml | yq eval -i 'image.tag' = ${params.TAG}.${BUILD_NUMBER}""", returnStdout: false)
-                
-		// 	}
-		// }
-    //     stage('Git Push to Main'){
-    //     steps{
-    //         script{
-    //             // GIT_CREDS = credentials(<git creds id>)
-    //             sh '''
-    //                 git add .
-    //                 git commit -m "push to git"
-    //                 git push https://saleh2784@gmail.com/ec2-proj.git main
-    //             '''
-    //         }
-    //     }
-    // }
+        
+        stage('Git Push to Main'){
+        steps{
+            script{
+                // GIT_CREDS = credentials(<git creds id>)
+                sh '''
+                    git commit -am 'new version'
+                    git push origin main 
+                    // gh pr 
+                    // gh auto-merge 
+                    // git push https://saleh2784@gmail.com/ec2-proj.git main
+                '''
+            }
+        }
+    }
 
     }
 	post {
