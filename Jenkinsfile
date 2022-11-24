@@ -103,9 +103,9 @@ pipeline {
                 chmod +x /usr/bin/yq""", returnStdout: false)
 			    // need to check the path for the helm ## /home/jenkins/workspace/ec2/helm-lab
                 dir('/home/jenkins/workspace/ec2/helm-lab/') {
-                sh (script : """ cat values.yaml """)
+                sh (script : """ cat values.yaml | grep tag """)
                 sh (script : """ yq -i \'.image.tag = \"${params.TAG}.${BUILD_NUMBER}\"\' values.yaml """, returnStdout: false)
-                sh (script : """ cat values.yaml """)
+                sh (script : """ cat values.yaml | grep tag """)
                 }
                
 			}
@@ -114,7 +114,7 @@ pipeline {
         stage('Git Push to Main'){
         steps{
             script{
-                withCredentials([gitUsernamePassword(credentialsId: 'github', gitToolName: 'git-tool')])
+                withCredentials([gitUsernamePassword(credentialsId: 'github', gitToolName: 'Default')])
                 // GIT_CREDS = credentials(<git creds id>)
                 sh 'git commit -am '"'"'new version ${BUILD_NUMBER}'"'"''
                 sh 'git push origin main'
