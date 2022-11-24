@@ -38,21 +38,21 @@ pipeline {
 
             }
         }
-        stage('Get SCM') {
-            // when {
-            //     expression{
-            //         branch '${params.branch}'
-            //     }
-            // }
-            steps {
-                git branch: 'development', credentialsId: 'github', url: 'https://github.com/saleh2784/ec2-proj.git'
+        // stage('Get SCM') {
+        //     // when {
+        //     //     expression{
+        //     //         branch '${params.branch}'
+        //     //     }
+        //     // }
+        //     steps {
+        //         git branch: 'development', credentialsId: 'github', url: 'https://github.com/saleh2784/ec2-proj.git'
 
-                // git branch: "${params.branch}", url: 'https://github.com/saleh2784/ec2-proj.git'
-            }
-        }
+        //         // git branch: "${params.branch}", url: 'https://github.com/saleh2784/ec2-proj.git'
+        //     }
+        // }
         stage('Git Push to Main'){
             steps{
-                // git branch: 'development', credentialsId: 'github', url: 'https://github.com/saleh2784/ec2-proj.git'
+                git branch: 'development', credentialsId: 'github', url: 'https://github.com/saleh2784/ec2-proj.git'
                 sh 'git config --local credential.helper "!f() { echo username=$GIT_AUTH_USR; echo password=$GIT_AUTH_PSW; }; f"'
                 // sh 'git config --global user.name \"saleh2784\"'
                 // sh 'git config --global user.email saleh2784@gmail.com'
