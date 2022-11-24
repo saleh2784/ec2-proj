@@ -45,7 +45,9 @@ pipeline {
                 }
             }
             steps {
-                git branch: "${params.branch}", url: 'https://github.com/saleh2784/ec2-proj.git'
+                git branch: 'development', credentialsId: 'github', url: 'https://github.com/saleh2784/ec2-proj.git'
+
+                // git branch: "${params.branch}", url: 'https://github.com/saleh2784/ec2-proj.git'
             }
         }
         stage('Git Push to Main'){
