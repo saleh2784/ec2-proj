@@ -2,7 +2,7 @@ pipeline {
     agent any
     parameters {
         string(name: 'INTERVAL', defaultValue: '300' )
-        choice choices: [ 'development', 'main',], name: 'branch'
+        choice choices: [ 'development', 'main', 'saleh'], name: 'branch'
         string(name: 'TAG', defaultValue: '1' )
 
     }
@@ -56,10 +56,10 @@ pipeline {
                 sh 'git config --local credential.helper "!f() { echo username=$GIT_AUTH_USR; echo password=$GIT_AUTH_PSW; }; f"'
                 // sh 'git config --global user.name \"saleh2784\"'
                 // sh 'git config --global user.email saleh2784@gmail.com'
-                sh 'echo \"hello world\" > 2.txt'
-                sh 'git add 2.txt'
+                sh 'echo \"hello world\" > ss.txt'
+                sh 'git add ss.txt'
                 sh 'git commit -am \"test\"'
-                sh 'git push origin PROD'  
+                sh 'git push origin saleh'  
             }
         }
         
