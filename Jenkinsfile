@@ -11,7 +11,7 @@ pipeline {
 //         CONFIG = credentials('config')
         DOCKER = 'ec2app'
         DOCKERHUB_CREDENTIALS = credentials('docker-hub')
-        GITHUB_CREDENTIALS = credentials('github')
+        GIT_AUTH = credentials('github')
         // int TAG = readFile(file: 'tag.txt')
         
     }
@@ -46,6 +46,18 @@ pipeline {
             }
             steps {
                 git branch: "${params.branch}", url: 'https://github.com/saleh2784/ec2-proj.git'
+            }
+        }
+        stage('Git Push to Main'){
+            steps{
+                // git branch: 'development', credentialsId: 'github', url: 'https://github.com/saleh2784/ec2-proj.git'
+                sh 'git config --local credential.helper "!f() { echo username=$GIT_AUTH_USR; echo password=$GIT_AUTH_PSW; }; f"'
+                // sh 'git config --global user.name \"saleh2784\"'
+                // sh 'git config --global user.email saleh2784@gmail.com'
+                sh 'echo \"hello world\" > 2.txt'
+                sh 'git add 2.txt'
+                sh 'git commit -am \"test\"'
+                sh 'git push origin HEAD:main'  
             }
         }
         
@@ -111,18 +123,18 @@ pipeline {
 			}
 		}
         
-        stage('Git Push to Main'){
-            steps{
-                // git branch: 'development', credentialsId: 'github', url: 'https://github.com/saleh2784/ec2-proj.git'
-                sh 'git config --local credential.helper "!f() { echo username=$GITHUB_CREDENTIALS_USR; echo password=$GITHUB_CREDENTIALS_PSW; }; f"'
-                // sh 'git config --global user.name \"saleh2784\"'
-                // sh 'git config --global user.email saleh2784@gmail.com'
-                sh 'echo \"hello world\" > 2.txt'
-                sh 'git add 2.txt'
-                sh 'git commit -am \"test\"'
-                sh 'git push origin main'  
-            }
-        }
+        // stage('Git Push to Main'){
+        //     steps{
+        //         // git branch: 'development', credentialsId: 'github', url: 'https://github.com/saleh2784/ec2-proj.git'
+        //         sh 'git config --local credential.helper "!f() { echo username=$GIT_AUTH_USR; echo password=$GIT_AUTH_PSW; }; f"'
+        //         // sh 'git config --global user.name \"saleh2784\"'
+        //         // sh 'git config --global user.email saleh2784@gmail.com'
+        //         sh 'echo \"hello world\" > 2.txt'
+        //         sh 'git add 2.txt'
+        //         sh 'git commit -am \"test\"'
+        //         sh 'git push origin HEAD:main'  
+        //     }
+        // }
 
     }
 	post {
