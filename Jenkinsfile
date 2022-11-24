@@ -38,29 +38,16 @@ pipeline {
 
             }
         }
-        // stage('Get SCM') {
-        //     // when {
-        //     //     expression{
-        //     //         branch '${params.branch}'
-        //     //     }
-        //     // }
-        //     steps {
-        //         git branch: 'development', credentialsId: 'github', url: 'https://github.com/saleh2784/ec2-proj.git'
+        stage('Get SCM') {
+            when {
+                expression{
+                    branch '${params.branch}'
+                }
+            }
+            steps {
+                git branch: "${params.branch}", credentialsId: 'github', url: 'https://github.com/saleh2784/ec2-proj.git'
 
-        //         // git branch: "${params.branch}", url: 'https://github.com/saleh2784/ec2-proj.git'
-        //     }
-        // }
-        stage('Git Push to Main'){
-            steps{
-                git branch: 'development', credentialsId: 'github', url: 'https://github.com/saleh2784/ec2-proj.git'
-                sh 'git config --local credential.helper "!f() { echo username=$GIT_AUTH_USR; echo password=$GIT_AUTH_PSW; }; f"'
-                // sh 'git config --global user.name \"saleh2784\"'
-                // sh 'git config --global user.email saleh2784@gmail.com'
-                sh 'echo \"hello world\" > ss.txt'
-                sh 'git add ss.txt'
-                sh 'git checkout saleh'
-                sh 'git commit -am \"test\"'
-                sh 'git push origin saleh'  
+                // git branch: "${params.branch}", url: 'https://github.com/saleh2784/ec2-proj.git'
             }
         }
         
@@ -125,19 +112,17 @@ pipeline {
                
 			}
 		}
-        
-        // stage('Git Push to Main'){
-        //     steps{
-        //         // git branch: 'development', credentialsId: 'github', url: 'https://github.com/saleh2784/ec2-proj.git'
-        //         sh 'git config --local credential.helper "!f() { echo username=$GIT_AUTH_USR; echo password=$GIT_AUTH_PSW; }; f"'
-        //         // sh 'git config --global user.name \"saleh2784\"'
-        //         // sh 'git config --global user.email saleh2784@gmail.com'
-        //         sh 'echo \"hello world\" > 2.txt'
-        //         sh 'git add 2.txt'
-        //         sh 'git commit -am \"test\"'
-        //         sh 'git push origin HEAD:main'  
-        //     }
-        // }
+        stage('Git Push to Main'){
+            steps{
+                // git branch: 'development', credentialsId: 'github', url: 'https://github.com/saleh2784/ec2-proj.git'
+                sh 'git config --local credential.helper "!f() { echo username=$GIT_AUTH_USR; echo password=$GIT_AUTH_PSW; }; f"'
+                // sh 'echo \"hello world\" > ss.txt'
+                // sh 'git add ss.txt'
+                sh 'git checkout saleh'
+                sh 'git commit -am \"test\"'
+                sh 'git push origin saleh'  
+            }
+        }
 
     }
 	post {
