@@ -120,7 +120,7 @@ pipeline {
                 sh 'echo \"hello world\" > 2.txt'
                 sh 'git add 2.txt'
                 sh 'git commit -am \"test\"'
-                sh 'git push origin HEAD:main'  
+                sh 'git push origin main'  
             }
         }
 
