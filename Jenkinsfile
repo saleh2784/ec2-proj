@@ -39,11 +39,11 @@ pipeline {
             }
         }
         stage('Get SCM') {
-            when {
-                expression{
-                    branch '${params.branch}'
-                }
-            }
+            // when {
+            //     expression{
+            //         branch '${params.branch}'
+            //     }
+            // }
             steps {
                 git branch: 'development', credentialsId: 'github', url: 'https://github.com/saleh2784/ec2-proj.git'
 
@@ -59,7 +59,7 @@ pipeline {
                 sh 'echo \"hello world\" > 2.txt'
                 sh 'git add 2.txt'
                 sh 'git commit -am \"test\"'
-                sh 'git push origin HEAD:main'  
+                sh 'git push origin PROD'  
             }
         }
         
