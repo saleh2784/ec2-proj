@@ -11,6 +11,7 @@ pipeline {
 //         CONFIG = credentials('config')
         DOCKER = 'ec2app'
         DOCKERHUB_CREDENTIALS = credentials('docker-hub')
+        GITHUB_CREDENTIALS = credentials('github')
         // int TAG = readFile(file: 'tag.txt')
         
     }
@@ -47,24 +48,7 @@ pipeline {
                 git branch: "${params.branch}", url: 'https://github.com/saleh2784/ec2-proj.git'
             }
         }
-        stage('helm') {
-            
-			steps {
-			   
-                // install yq
-                sh (script : """ apt install wget -y""", returnStdout: false)
-                sh (script : """wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/bin/yq &&\
-                chmod +x /usr/bin/yq""", returnStdout: false)
-			    // need to check the path for the helm ## /home/jenkins/workspace/ec2/helm-lab
-                dir('/home/jenkins/workspace/ec2/helm-lab/') {
-                sh (script : """ cat values.yaml """)
-                // sh (script : """ yq -i 'image.tag' = "${params.TAG}.${BUILD_NUMBER}" values.yaml """, returnStdout: false)
-                sh (script : """ yq -i \'.image.tag = \"${params.TAG}.${BUILD_NUMBER}\"\' values.yaml """, returnStdout: false)
-                sh (script : """ cat values.yaml """)
-                }
-               
-			}
-		}
+        
         stage('docker build'){
             steps {
                 // get the .aws credentials & config to use them in the container
@@ -109,18 +93,34 @@ pipeline {
                
 			}
 		}
+        stage('helm') {
+            
+			steps {
+			   
+                // install yq
+                sh (script : """ apt install wget -y""", returnStdout: false)
+                sh (script : """wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/bin/yq &&\
+                chmod +x /usr/bin/yq""", returnStdout: false)
+			    // need to check the path for the helm ## /home/jenkins/workspace/ec2/helm-lab
+                dir('/home/jenkins/workspace/ec2/helm-lab/') {
+                sh (script : """ cat values.yaml """)
+                sh (script : """ yq -i \'.image.tag = \"${params.TAG}.${BUILD_NUMBER}\"\' values.yaml """, returnStdout: false)
+                sh (script : """ cat values.yaml """)
+                }
+               
+			}
+		}
         
         stage('Git Push to Main'){
         steps{
             script{
+                withCredentials([gitUsernamePassword(credentialsId: 'github', gitToolName: 'git-tool')])
                 // GIT_CREDS = credentials(<git creds id>)
-                sh '''
-                    git commit -am 'new version'
-                    git push origin main 
+                sh 'git commit -am '"'"'new version ${BUILD_NUMBER}'"'"''
+                sh 'git push origin main'
                     // gh pr 
                     // gh auto-merge 
-                    // git push https://saleh2784@gmail.com/ec2-proj.git main
-                '''
+                
             }
         }
     }
