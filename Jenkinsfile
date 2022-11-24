@@ -56,8 +56,9 @@ pipeline {
                 sh 'git config --local credential.helper "!f() { echo username=$GIT_AUTH_USR; echo password=$GIT_AUTH_PSW; }; f"'
                 // sh 'git config --global user.name \"saleh2784\"'
                 // sh 'git config --global user.email saleh2784@gmail.com'
-                // sh 'echo \"hello world\" > ss.txt'
-                // sh 'git add ss.txt'
+                sh 'echo \"hello world\" > ss.txt'
+                sh 'git add ss.txt'
+                sh 'git checkout saleh'
                 sh 'git commit -am \"test\"'
                 sh 'git push origin saleh'  
             }
