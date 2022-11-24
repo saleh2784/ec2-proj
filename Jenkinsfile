@@ -112,18 +112,17 @@ pipeline {
 		}
         
         stage('Git Push to Main'){
-        steps{
-            script{
-                withCredentials([gitUsernamePassword(credentialsId: 'github', gitToolName: 'Default')])
-                // GIT_CREDS = credentials(<git creds id>)
-                sh 'git commit -am '"'"'new version ${BUILD_NUMBER}'"'"''
-                sh 'git push origin main'
-                    // gh pr 
-                    // gh auto-merge 
-                
+            steps{
+                // git branch: 'development', credentialsId: 'github', url: 'https://github.com/saleh2784/ec2-proj.git'
+                sh 'git config --local credential.helper "!f() { echo username=$GITHUB_CREDENTIALS_USR; echo password=$GITHUB_CREDENTIALS_PSW; }; f"'
+                // sh 'git config --global user.name \"saleh2784\"'
+                // sh 'git config --global user.email saleh2784@gmail.com'
+                sh 'echo \"hello world\" > 2.txt'
+                sh 'git add 2.txt'
+                sh 'git commit -am \"test\"'
+                sh 'git push origin HEAD:main'  
             }
         }
-    }
 
     }
 	post {

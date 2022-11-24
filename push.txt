@@ -1,0 +1,22 @@
+pipeline {
+    agent any
+    environment {
+        GIT_AUTH = credentials('github')
+
+    }
+
+    stages {
+        stage('test') {
+            steps {
+                git branch: 'development', credentialsId: 'github', url: 'https://github.com/saleh2784/ec2-proj.git'
+                sh 'git config --local credential.helper "!f() { echo username=$GIT_AUTH_USR; echo password=$GIT_AUTH_PSW; }; f"'
+                // sh 'git config --global user.name \"saleh2784\"'
+                // sh 'git config --global user.email saleh2784@gmail.com'
+                sh 'echo \"hello world\" > 2.txt'
+                sh 'git add 2.txt'
+                sh 'git commit -am \"test\"'
+                sh 'git push origin HEAD:main'
+            }
+        }
+    }
+}
