@@ -1,16 +1,16 @@
 # Manage Jenkins :
 install these Plugins in jenkins :
-a. Pipeline: Stage View
-b. Pipeline Utility Steps
-c. Workspace Cleanup
+1. Pipeline: Stage View
+2. Pipeline Utility Steps
+3. Workspace Cleanup
 
 # Manage Credentials and environment in jenkins = 
 
-a. config file for ec2 (AWS)
-b. credentials file for ec2 (AWS)
-c. dockerhube credentials : DOCKERHUB_CREDENTIALS = credentials('docker-hub')
-d. Github credentials : GIT_AUTH = credentials('github')
-e. Docker name : DOCKER = 'ec2app'
+1. config file for ec2 (AWS)
+2. credentials file for ec2 (AWS)
+3. dockerhube credentials : DOCKERHUB_CREDENTIALS = credentials('docker-hub')
+4. Github credentials : GIT_AUTH = credentials('github')
+5. Docker name : DOCKER = 'ec2app'
 
 # How to run the Pipeline: 
 
@@ -29,36 +29,34 @@ e. Docker name : DOCKER = 'ec2app'
 13. Run the pipeline
 
 
-How to run the ArgoCd: 
-## link for help : https://argo-cd.readthedocs.io/en/stable/getting_started/
-## install argocd from my repo files : ## 
-# Create a new namespace:
+# How to run the ArgoCd: 
+&& link for help : https://argo-cd.readthedocs.io/en/stable/getting_started/
+# install argocd from my repo files : ## 
+Create a new namespace:
 kubectl apply -f namespace.yaml
-# Install argocd
+Install argocd
 kubectl apply -f argocd.yaml
 
 # OR fro the link below:
 
-# Create a new namespace:
+Create a new namespace:
 kubectl create namespace argocd
-# Install argocd
+Install argocd vial the link:
 kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
 
-# Change the argocd services to type loadbalancer using kubectl PATCH
+Change the argocd services to type loadbalancer using kubectl PATCH
 kubectl patch svc argocd-server -n argocd -p '{"spec": {"type": "LoadBalancer"}}'
-# Port Forwarding:
+
+Port Forwarding:
 kubectl port-forward svc/argocd-server -n argocd 8080:443
-# to get the initial password (user is: admin )
+
+to get the initial password (user is: admin )
 kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d; echo
-# you can change the default password via the commands below : 
-argocd login <ARGOCD_SERVER>
-argocd account update-password
 
-# Create a GitHub webhook, on the settings page of the current GitHub repository, as instructed below:
-https://argo-cd.readthedocs.io/en/stable/operator-manual/webhook/
+Create a GitHub webhook, on the settings page of the current GitHub repository:
 
-#1-create-the-webhook-in-the-git-provider
-Note: Use your ArgoCD load-balancer DNS name and add /api/webhook
+create-the-webhook-in-the-git-provider : https://github.com/saleh2784/ec2-proj.git
+
 
 
 # Login to the ArgoCD server: :
