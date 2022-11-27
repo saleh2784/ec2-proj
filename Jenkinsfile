@@ -56,10 +56,9 @@ pipeline {
                 sh 'git config --local credential.helper "!f() { echo username=$GIT_AUTH_USR; echo password=$GIT_AUTH_PSW; }; f"'
                 sh 'echo \"hello world\" > ss.txt'
                 sh 'git add .'
-                // sh 'git stash'
-                sh 'git checkout main'
                 // sh 'git add .'
                 sh 'git commit -am \"new build version ${params.TAG}.${BUILD_NUMBER}\"'
+                sh 'git checkout main'
                 sh 'git push origin main'  
             }
         }
