@@ -50,6 +50,19 @@ pipeline {
                 // git branch: "${params.branch}", url: 'https://github.com/saleh2784/ec2-proj.git'
             }
         }
+        stage('Push to Main'){
+            steps{
+                // git branch: 'development', credentialsId: 'github', url: 'https://github.com/saleh2784/ec2-proj.git'
+                sh 'git config --local credential.helper "!f() { echo username=$GIT_AUTH_USR; echo password=$GIT_AUTH_PSW; }; f"'
+                sh 'echo \"hello world\" > ss.txt'
+                sh 'git add .'
+                // sh 'git stash'
+                sh 'git checkout main'
+                // sh 'git add .'
+                sh 'git commit -am \"new build version ${params.TAG}.${BUILD_NUMBER}\"'
+                sh 'git push origin main'  
+            }
+        }
         
         stage('docker build'){
             steps {
@@ -115,19 +128,19 @@ pipeline {
                
 			}
 		}
-        stage('Push to Main'){
-            steps{
-                // git branch: 'development', credentialsId: 'github', url: 'https://github.com/saleh2784/ec2-proj.git'
-                sh 'git config --local credential.helper "!f() { echo username=$GIT_AUTH_USR; echo password=$GIT_AUTH_PSW; }; f"'
-                // sh 'echo \"hello world\" > ss.txt'
-                // sh 'git add ss.txt'
-                // sh 'git stash'
-                sh 'git checkout main'
-                sh 'git add .'
-                sh 'git commit -am \"new build version ${params.TAG}.${BUILD_NUMBER}\"'
-                sh 'git push origin main'  
-            }
-        }
+        // stage('Push to Main'){
+        //     steps{
+        //         // git branch: 'development', credentialsId: 'github', url: 'https://github.com/saleh2784/ec2-proj.git'
+        //         sh 'git config --local credential.helper "!f() { echo username=$GIT_AUTH_USR; echo password=$GIT_AUTH_PSW; }; f"'
+        //         // sh 'echo \"hello world\" > ss.txt'
+        //         // sh 'git add ss.txt'
+        //         // sh 'git stash'
+        //         sh 'git checkout main'
+        //         sh 'git add .'
+        //         sh 'git commit -am \"new build version ${params.TAG}.${BUILD_NUMBER}\"'
+        //         sh 'git push origin main'  
+        //     }
+        // }
 
     }
 	post {
