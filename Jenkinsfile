@@ -122,7 +122,7 @@ pipeline {
                 // sh 'echo \"hello world\" > ss.txt'
                 // sh 'git add ss.txt'
                 sh 'git checkout main'
-                sh 'git commit -am \"new build version\"'
+                sh 'git commit -am \"new build version = ${params.TAG}.${BUILD_NUMBER}\"'
                 sh 'git push origin main'  
             }
         }
