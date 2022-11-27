@@ -2,7 +2,7 @@ pipeline {
     agent any
     parameters {
         string(name: 'INTERVAL', defaultValue: '300' )
-        choice choices: [ 'development', 'main', 'PROD', 'saleh'], name: 'branch'
+        choice choices: [ 'development', 'main', 'PROD'], name: 'branch'
         string(name: 'TAG', defaultValue: '1' )
 
     }

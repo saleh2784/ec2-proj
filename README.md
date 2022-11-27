@@ -24,7 +24,7 @@ install these Plugins in jenkins :
 8. in Build Triggers mark "GitHub hook trigger for GITScm polling" 
 9. Run the pipeline with parameters
 10. Enter the INTERVAL "defualt 300"
-11. Choose the branch ('main', 'development', 'PROD', 'saleh') "defualt development"
+11. Choose the branch ('main', 'development', 'PROD') "defualt development"
 12. Enter the tag "defualt 1"
 13. Run the pipeline
 
