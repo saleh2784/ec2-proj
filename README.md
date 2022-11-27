@@ -39,13 +39,65 @@ How to run the Pipeline:
 12. Enter the tag "defualt 1"
 13. Run the pipeline
 
-14. install argocd :
-a. kubectl apply -f namespace.yaml
-b. kubectl apply -f argocd.yaml
+How to run the ArgoCd: 
+## link for help : https://argo-cd.readthedocs.io/en/stable/getting_started/
+## install argocd : 
+# Create a new namespace:
+kubectl apply -f namespace.yaml
+# Install argocd
+kubectl apply -f argocd.yaml
+# OR 
+# Create a new namespace:
+kubectl create namespace argocd
+# Install argocd
+kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+
 # Change the argocd services to type loadbalancer using kubectl PATCH
-c. run: kubectl patch svc argocd-server -n argocd -p '{"spec": {"type": "LoadBalancer"}}'
+kubectl patch svc argocd-server -n argocd -p '{"spec": {"type": "LoadBalancer"}}'
 # Port Forwarding:
-d. run : kubectl port-forward svc/argocd-server -n argocd 8080:443
+kubectl port-forward svc/argocd-server -n argocd 8080:443
 # to get the initial password (user is: admin )
-e. run: kubectl get pods -n argocd -l app.kubernetes.io/name=argocd-server -o name | cut -d'/' -f f. run : kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d; echo
-15. 
+kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d; echo
+# you can change the default password via the commands below : 
+argocd login <ARGOCD_SERVER>
+argocd account update-password
+
+# Create a GitHub webhook, on the settings page of the current GitHub repository, as instructed below:
+https://argo-cd.readthedocs.io/en/stable/operator-manual/webhook/#1-create-the-webhook-in-the-git-provider
+Note: Use your ArgoCD load-balancer DNS name and add /api/webhook
+
+
+# Login to the ArgoCD server: :
+
+https://[argocd_load-balancer_DNS_name]
+
+# Create a Helm repository:
+
+From the ArgoCD UI, Select Settings -> Connect Repo
+In Choose your connection method: Select VIA HTTPS
+Type: git
+Project: default
+Repository URL: Specify your GIT repository : https://github.com/saleh2784/ec2-proj.git
+Username : optional
+Password : optional
+Select "Skip server verification"
+Click Connect yuo will get "Connection Status" = "Successful"
+
+
+# Create an Application in Argo CD Defined By a Helm Chart:
+
+From the ArgoCD Main :
+Select Applications
+Click "New App"
+Application Name: ec2-app
+Project Name: default
+Repository URL: https://github.com/saleh2784/ec2-proj.git
+Revision: HEAD
+Path: helm-lab
+Cluster URL: Select the default value
+Namespace: argocd
+Click Create
+Click Sync -> click on Synchronize
+
+
+
