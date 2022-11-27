@@ -38,3 +38,14 @@ How to run the Pipeline:
 11. Choose the branch ('main', 'DEV', 'PROD', 'saleh') "defualt development"
 12. Enter the tag "defualt 1"
 13. Run the pipeline
+
+14. install argocd :
+a. kubectl apply -f namespace.yaml
+b. kubectl apply -f argocd.yaml
+# Change the argocd services to type loadbalancer using kubectl PATCH
+c. run: kubectl patch svc argocd-server -n argocd -p '{"spec": {"type": "LoadBalancer"}}'
+# Port Forwarding:
+d. run : kubectl port-forward svc/argocd-server -n argocd 8080:443
+# to get the initial password (user is: admin )
+e. run: kubectl get pods -n argocd -l app.kubernetes.io/name=argocd-server -o name | cut -d'/' -f f. run : kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d; echo
+15. 
