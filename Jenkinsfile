@@ -31,9 +31,9 @@ pipeline {
                 // kill old containers !!!
                 sh "docker kill ${DOCKER}:${params.TAG} || true"
                 // Removing exited containers 
-                // sh "docker ps -q -f status=exited | xargs --no-run-if-empty docker rm || true"
+                sh "docker ps -q -f status=exited | xargs --no-run-if-empty docker rm || true"
                 //delete old images 
-                // sh 'docker image prune -fa || true'
+                sh 'docker image prune -fa || true'
 
             }
         }
@@ -69,6 +69,19 @@ pipeline {
 
             }
         }
+        stage('Push to Main'){
+            steps{
+                // git branch: 'development', credentialsId: 'github', url: 'https://github.com/saleh2784/ec2-proj.git'
+                sh 'git config --local credential.helper "!f() { echo username=$GIT_AUTH_USR; echo password=$GIT_AUTH_PSW; }; f"'
+                // sh 'echo \"hello world\" > ss.txt'
+                // sh 'git add ss.txt'
+                // sh 'git stash'
+                sh 'git checkout main'
+                sh 'git add .'
+                sh 'git commit -am \"new build version ${params.TAG}.${BUILD_NUMBER}\"'
+                sh 'git push origin main'  
+            }
+        }
         stage('DockerHub Login') {
 
 			steps {
@@ -100,7 +113,7 @@ pipeline {
                 sh (script : """wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/bin/yq &&\
                 chmod +x /usr/bin/yq""", returnStdout: false)
 			    // need to check the path for the helm ## /home/jenkins/workspace/ec2/helm-lab
-                dir('/home/jenkins/workspace/ec2/helm-lab/') {
+                dir('/home/jenkins/workspace/ec2-app/helm-lab/') {
                 // show the current tag
                 sh (script : """ cat values.yaml | grep tag """)
                 // replace the new tag in the values.yaml
@@ -111,19 +124,31 @@ pipeline {
                
 			}
 		}
-        stage('Push to Main'){
+
+        stage('Push to Master'){
             steps{
                 // git branch: 'development', credentialsId: 'github', url: 'https://github.com/saleh2784/ec2-proj.git'
                 sh 'git config --local credential.helper "!f() { echo username=$GIT_AUTH_USR; echo password=$GIT_AUTH_PSW; }; f"'
                 // sh 'echo \"hello world\" > ss.txt'
                 // sh 'git add ss.txt'
                 // sh 'git stash'
-                sh 'git checkout main'
+                sh 'git checkout master'
                 sh 'git add .'
                 sh 'git commit -am \"new build version ${params.TAG}.${BUILD_NUMBER}\"'
-                sh 'git push origin main'  
+                sh 'git push origin master'  
             }
         }
+        // stage('Push to Master'){
+        //     steps{
+        //         // git branch: 'development', credentialsId: 'github', url: 'https://github.com/saleh2784/ec2-proj.git'
+        //         sh 'git config --local credential.helper "!f() { echo username=$GIT_AUTH_USR; echo password=$GIT_AUTH_PSW; }; f"'
+        //         sh 'git checkout master'
+        //         sh 'echo \"hello world +++++++++\" > saleh11.txt'
+        //         sh 'git add saleh11.txt'
+        //         sh 'git commit -m \"test1000000\"'
+        //         sh 'git push origin master '  
+        //     }
+        // }
 
     }
 	post {
