@@ -95,7 +95,7 @@ pipeline {
                
 			}
 		}
-        stage('helm') {
+        stage('Install yq & Edit helm tag') {
             
 			steps {
 			   
@@ -105,8 +105,11 @@ pipeline {
                 chmod +x /usr/bin/yq""", returnStdout: false)
 			    // need to check the path for the helm ## /home/jenkins/workspace/ec2/helm-lab
                 dir('/home/jenkins/workspace/ec2/helm-lab/') {
+                // show the current tag
                 sh (script : """ cat values.yaml | grep tag """)
+                // replace the new tag in the values.yaml
                 sh (script : """ yq -i \'.image.tag = \"${params.TAG}.${BUILD_NUMBER}\"\' values.yaml """, returnStdout: false)
+                // show the current tag
                 sh (script : """ cat values.yaml | grep tag """)
                 }
                
@@ -118,10 +121,9 @@ pipeline {
                 sh 'git config --local credential.helper "!f() { echo username=$GIT_AUTH_USR; echo password=$GIT_AUTH_PSW; }; f"'
                 // sh 'echo \"hello world\" > ss.txt'
                 // sh 'git add ss.txt'
-                // need to chang the barnch to main (master) instaed of saleh
-                sh 'git checkout saleh'
-                sh 'git commit -am \"test\"'
-                sh 'git push origin saleh'  
+                sh 'git checkout main'
+                sh 'git commit -am \"new build version\"'
+                sh 'git push origin main'  
             }
         }
 

@@ -28,6 +28,10 @@ install these Plugins in jenkins :
 12. Enter the tag "defualt 1"
 13. Run the pipeline
 
+# after the the bulid is successed :
+1. the value in the helm image tage will changed to the new buildnumber (via yq tool)
+2. tha development brunch will merge to main branch  
+
 
 # How to run the argocd: 
 ** link for help : https://argo-cd.readthedocs.io/en/stable/getting_started/
