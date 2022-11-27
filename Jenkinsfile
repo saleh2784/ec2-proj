@@ -2,7 +2,7 @@ pipeline {
     agent any
     parameters {
         string(name: 'INTERVAL', defaultValue: '300' )
-        choice choices: [ 'development', 'main',], name: 'branch'
+        choice choices: [ 'development', 'main', 'PROD'], name: 'branch'
         string(name: 'TAG', defaultValue: '1' )
 
     }
@@ -11,7 +11,7 @@ pipeline {
 //         CONFIG = credentials('config')
         DOCKER = 'ec2app'
         DOCKERHUB_CREDENTIALS = credentials('docker-hub')
-        GITHUB_CREDENTIALS = credentials('github')
+        GIT_AUTH = credentials('github')
         // int TAG = readFile(file: 'tag.txt')
         
     }
@@ -45,7 +45,9 @@ pipeline {
                 }
             }
             steps {
-                git branch: "${params.branch}", url: 'https://github.com/saleh2784/ec2-proj.git'
+                git branch: "${params.branch}", credentialsId: 'github', url: 'https://github.com/saleh2784/ec2-proj.git'
+
+                // git branch: "${params.branch}", url: 'https://github.com/saleh2784/ec2-proj.git'
             }
         }
         
@@ -93,37 +95,39 @@ pipeline {
                
 			}
 		}
-        stage('helm') {
+        stage('Install yq & Edit helm tag') {
             
 			steps {
 			   
-                // install yq
+                // install yq :
                 sh (script : """ apt install wget -y""", returnStdout: false)
                 sh (script : """wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/bin/yq &&\
                 chmod +x /usr/bin/yq""", returnStdout: false)
 			    // need to check the path for the helm ## /home/jenkins/workspace/ec2/helm-lab
                 dir('/home/jenkins/workspace/ec2/helm-lab/') {
+                // show the current tag
                 sh (script : """ cat values.yaml | grep tag """)
+                // replace the new tag in the values.yaml
                 sh (script : """ yq -i \'.image.tag = \"${params.TAG}.${BUILD_NUMBER}\"\' values.yaml """, returnStdout: false)
+                // show the current tag
                 sh (script : """ cat values.yaml | grep tag """)
                 }
                
 			}
 		}
-        
-        stage('Git Push to Main'){
-        steps{
-            script{
-                withCredentials([gitUsernamePassword(credentialsId: 'github', gitToolName: 'Default')])
-                // GIT_CREDS = credentials(<git creds id>)
-                sh 'git commit -am '"'"'new version ${BUILD_NUMBER}'"'"''
-                sh 'git push origin main'
-                    // gh pr 
-                    // gh auto-merge 
-                
+        stage('Push to Main'){
+            steps{
+                // git branch: 'development', credentialsId: 'github', url: 'https://github.com/saleh2784/ec2-proj.git'
+                sh 'git config --local credential.helper "!f() { echo username=$GIT_AUTH_USR; echo password=$GIT_AUTH_PSW; }; f"'
+                // sh 'echo \"hello world\" > ss.txt'
+                // sh 'git add ss.txt'
+                // sh 'git stash'
+                sh 'git checkout main'
+                sh 'git add .'
+                sh 'git commit -am \"new build version ${params.TAG}.${BUILD_NUMBER}\"'
+                sh 'git push origin main'  
             }
         }
-    }
 
     }
 	post {
