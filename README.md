@@ -15,11 +15,13 @@ a. Pipeline: Stage View
 b. Pipeline Utility Steps
 c. Workspace Cleanup
 
-2. Manage Credentials :
+2. Manage Credentials and environment = 
 
-a. config file for ec2 
-b. credentials file for ec2 
-c. dockerhube credentials (user name & secret key) 
+a. config file for ec2 (AWS)
+b. credentials file for ec2 (AWS)
+c. dockerhube credentials : DOCKERHUB_CREDENTIALS = credentials('docker-hub')
+d. Github credentials : GIT_AUTH = credentials('github')
+e. Docker name : DOCKER = 'ec2app'
 
 How to run the Pipeline: 
 
@@ -33,6 +35,6 @@ How to run the Pipeline:
 8. in Build Triggers mark "GitHub hook trigger for GITScm polling" 
 9. Run the pipeline with parameters
 10. Enter the INTERVAL "defualt 300"
-11. Choose the branch ('main', 'DEV', 'PROD') "defualt main"
+11. Choose the branch ('main', 'DEV', 'PROD', 'saleh') "defualt development"
 12. Enter the tag "defualt 1"
 13. Run the pipeline

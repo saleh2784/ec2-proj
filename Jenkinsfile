@@ -2,7 +2,7 @@ pipeline {
     agent any
     parameters {
         string(name: 'INTERVAL', defaultValue: '300' )
-        choice choices: [ 'development', 'main', 'saleh'], name: 'branch'
+        choice choices: [ 'development', 'main', 'PROD', 'saleh'], name: 'branch'
         string(name: 'TAG', defaultValue: '1' )
 
     }
@@ -99,7 +99,7 @@ pipeline {
             
 			steps {
 			   
-                // install yq
+                // install yq :
                 sh (script : """ apt install wget -y""", returnStdout: false)
                 sh (script : """wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/bin/yq &&\
                 chmod +x /usr/bin/yq""", returnStdout: false)
@@ -112,12 +112,13 @@ pipeline {
                
 			}
 		}
-        stage('Git Push to Main'){
+        stage('Push to Main'){
             steps{
                 // git branch: 'development', credentialsId: 'github', url: 'https://github.com/saleh2784/ec2-proj.git'
                 sh 'git config --local credential.helper "!f() { echo username=$GIT_AUTH_USR; echo password=$GIT_AUTH_PSW; }; f"'
                 // sh 'echo \"hello world\" > ss.txt'
                 // sh 'git add ss.txt'
+                // need to chang the barnch to main (master) instaed of saleh
                 sh 'git checkout saleh'
                 sh 'git commit -am \"test\"'
                 sh 'git push origin saleh'  
