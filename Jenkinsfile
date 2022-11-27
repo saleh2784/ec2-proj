@@ -54,12 +54,13 @@ pipeline {
             steps{
                 // git branch: 'development', credentialsId: 'github', url: 'https://github.com/saleh2784/ec2-proj.git'
                 sh 'git config --local credential.helper "!f() { echo username=$GIT_AUTH_USR; echo password=$GIT_AUTH_PSW; }; f"'
-                sh 'echo \"hello world\" > ss.txt'
-                sh 'git add .'
+                // sh 'echo \"hello world\" > ss.txt'
+                // sh 'git add ss.txt'
                 // sh 'git add .'
-                sh 'git commit -am \"new build version ${params.TAG}.${BUILD_NUMBER}\"'
                 sh 'git checkout main'
-                sh 'git push origin main'  
+                sh 'git add .'
+                sh 'git commit -m \"new build version ${params.TAG}.${BUILD_NUMBER}\"'
+                sh 'git push origin main'
             }
         }
         
