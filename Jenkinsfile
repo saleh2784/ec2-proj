@@ -31,10 +31,9 @@ pipeline {
                 // kill old containers !!!
                 sh "docker kill ${DOCKER}:${params.TAG} || true"
                 // Removing exited containers 
-                sh "docker ps -q -f status=exited | xargs --no-run-if-empty docker rm || true"
+                // sh "docker ps -q -f status=exited | xargs --no-run-if-empty docker rm || true"
                 //delete old images 
                 // sh 'docker image prune -fa || true'
-
 
             }
         }
@@ -46,21 +45,6 @@ pipeline {
             }
             steps {
                 git branch: "${params.branch}", credentialsId: 'github', url: 'https://github.com/saleh2784/ec2-proj.git'
-
-                // git branch: "${params.branch}", url: 'https://github.com/saleh2784/ec2-proj.git'
-            }
-        }
-        stage('Push to Main'){
-            steps{
-                // git branch: 'development', credentialsId: 'github', url: 'https://github.com/saleh2784/ec2-proj.git'
-                sh 'git config --local credential.helper "!f() { echo username=$GIT_AUTH_USR; echo password=$GIT_AUTH_PSW; }; f"'
-                // sh 'echo \"hello world\" > ss.txt'
-                // sh 'git add ss.txt'
-                // sh 'git add .'
-                sh 'git checkout main'
-                sh 'git add .'
-                sh 'git commit -m \"new build version ${params.TAG}.${BUILD_NUMBER}\"'
-                sh 'git push origin main'
             }
         }
         
@@ -82,7 +66,6 @@ pipeline {
             steps {
                 // running the container with the Inteval time and with the build number (the name of the container include the build number)
                 sh (script : "docker run -itd --name ${DOCKER} --env INTERVAL=${params.INTERVAL} ${DOCKER}:${params.TAG}", returnStdout: true  )
-                // sh "docker run -itd --name saleh2784/${DOCKER}-${env.BUILD_NUMBER}:${tagname} --env INTERVAL=${params.INTERVAL} saleh2784/${DOCKER}-${env.BUILD_NUMBER} &"  
 
             }
         }
@@ -128,19 +111,19 @@ pipeline {
                
 			}
 		}
-        // stage('Push to Main'){
-        //     steps{
-        //         // git branch: 'development', credentialsId: 'github', url: 'https://github.com/saleh2784/ec2-proj.git'
-        //         sh 'git config --local credential.helper "!f() { echo username=$GIT_AUTH_USR; echo password=$GIT_AUTH_PSW; }; f"'
-        //         // sh 'echo \"hello world\" > ss.txt'
-        //         // sh 'git add ss.txt'
-        //         // sh 'git stash'
-        //         sh 'git checkout main'
-        //         sh 'git add .'
-        //         sh 'git commit -am \"new build version ${params.TAG}.${BUILD_NUMBER}\"'
-        //         sh 'git push origin main'  
-        //     }
-        // }
+        stage('Push to Main'){
+            steps{
+                // git branch: 'development', credentialsId: 'github', url: 'https://github.com/saleh2784/ec2-proj.git'
+                sh 'git config --local credential.helper "!f() { echo username=$GIT_AUTH_USR; echo password=$GIT_AUTH_PSW; }; f"'
+                // sh 'echo \"hello world\" > ss.txt'
+                // sh 'git add ss.txt'
+                // sh 'git stash'
+                sh 'git checkout main'
+                sh 'git add .'
+                sh 'git commit -am \"new build version ${params.TAG}.${BUILD_NUMBER}\"'
+                sh 'git push origin main'  
+            }
+        }
 
     }
 	post {
