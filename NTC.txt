@@ -1,6 +1,0 @@
-1- Code Jenkins =  push under branch development
-2- Git Run \ Lint \ Build image = i did 
-3- Update Chart with build version = NTC the path for the the helm-lab/values.yaml
-4- Merge to Master = need to merge the code from development to Main
-5- Argo Auto-sync deploys the chart from Master branch\Build 
-
