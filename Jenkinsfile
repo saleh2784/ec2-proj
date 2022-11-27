@@ -123,7 +123,8 @@ pipeline {
                 // sh 'git add ss.txt'
                 // sh 'git stash'
                 sh 'git checkout main'
-                sh 'git commit -am \"new build version = ${params.TAG}.${BUILD_NUMBER}\"'
+                sh 'git add .'
+                sh 'git commit -am \"new build version ${params.TAG}.${BUILD_NUMBER}\"'
                 sh 'git push origin main'  
             }
         }
