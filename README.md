@@ -77,6 +77,10 @@ create-the-webhook-in-the-git-provider : https://github.com/saleh2784/ec2-proj.g
 
 https://[argocd_load-balancer_DNS_name]
 
+or (if you run it under minikube)
+
+https://localhost:8080/
+
 # Create a Helm repository:
 
 1. From the ArgoCD UI, Select Settings -> Connect Repo
@@ -98,7 +102,7 @@ From the ArgoCD Main :
 3. Application Name: ec2-app
 4. Project Name: default
 5. Repository URL: https://github.com/saleh2784/ec2-proj.git
-6. Revision: HEAD
+6. Revision: HEAD (branch)
 7. Path: helm-lab
 8. Cluster URL: Select the default value
 9. Namespace: argocd
