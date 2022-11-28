@@ -2,7 +2,7 @@ pipeline {
     agent any
     parameters {
         string(name: 'INTERVAL', defaultValue: '300' )
-        choice choices: [ 'development', 'main', 'PROD'], name: 'branch'
+        choice choices: [ 'development', 'mster'], name: 'branch'
         string(name: 'TAG', defaultValue: '1' )
 
     }
@@ -33,7 +33,7 @@ pipeline {
                 // Removing exited containers 
                 sh "docker ps -q -f status=exited | xargs --no-run-if-empty docker rm || true"
                 //delete old images 
-                // sh 'docker image prune -fa || true'
+                sh 'docker image prune -fa || true'
 
 
             }
@@ -115,17 +115,20 @@ pipeline {
                
 			}
 		}
-        stage('Push to Main'){
+        stage('Push to msater'){
             steps{
                 // git branch: 'development', credentialsId: 'github', url: 'https://github.com/saleh2784/ec2-proj.git'
                 sh 'git config --local credential.helper "!f() { echo username=$GIT_AUTH_USR; echo password=$GIT_AUTH_PSW; }; f"'
+                dir('/home/jenkins/workspace/ec2-app/helm-lab/') {
                 // sh 'echo \"hello world\" > ss.txt'
                 // sh 'git add ss.txt'
                 // sh 'git stash'
-                sh 'git checkout main'
+                sh 'git checkout master'
                 sh 'git add .'
-                sh 'git commit -am \"new build version ${params.TAG}.${BUILD_NUMBER}\"'
-                sh 'git push origin main'  
+                sh 'git commit -m "new build version:"'
+                // sh 'git commit -am \"new build version ${params.TAG}.${BUILD_NUMBER}\"'
+                sh 'git push origin master'  
+                }  
             }
         }
 
