@@ -122,7 +122,6 @@ pipeline {
                 dir('/home/jenkins/workspace/ec2-app/helm-lab/') {
                 // sh 'echo \"hello world\" > ss.txt'
                 // sh 'git add ss.txt'
-                // sh 'git stash'
                 sh 'git checkout master'
                 sh 'git add .'
                 sh 'git commit -m "new build version:"'
