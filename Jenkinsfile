@@ -122,11 +122,11 @@ pipeline {
                 dir('/home/jenkins/workspace/ec2-app/helm-lab/') {
                 // sh 'echo \"hello world\" > ss.txt'
                 // sh 'git add ss.txt'
-                sh 'git checkout main'
+                sh 'git checkout master'
                 sh 'git add .'
                 sh 'git commit -m "new build version:"'
                 // sh 'git commit -am \"new build version ${params.TAG}.${BUILD_NUMBER}\"'
-                sh 'git push origin main'  
+                sh 'git push origin master'  
                 }  
             }
         }
