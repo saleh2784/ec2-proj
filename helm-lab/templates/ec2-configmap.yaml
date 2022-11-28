@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ec2-configmap
+data:
+  INTERVAL: "300"
+  REGION: "us-east-2"
