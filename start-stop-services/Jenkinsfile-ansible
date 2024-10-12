@@ -50,7 +50,7 @@ pipeline {
                 ansiColor('xterm') {  // Wrap steps that need colored output
                     ansiblePlaybook(
                         playbook: "start-stop-services/stop.yaml",
-                        inventory: "hosts.ini",
+                        inventory: "start-stop-services/hosts.ini",
                         become: true,
                         extras: '-vvv',
                         forks: 1,
@@ -69,7 +69,7 @@ pipeline {
                 ansiColor('xterm') {  // Wrap steps that need colored output
                     ansiblePlaybook(
                         playbook: "start-stop-services/repair.yaml",
-                        inventory: "hosts.ini",
+                        inventory: "start-stop-services/hosts.ini",
                         become: true,
                         extras: '-vvv',
                         forks: 1,
@@ -88,7 +88,7 @@ pipeline {
                 ansiColor('xterm') {  // Wrap steps that need colored output
                     ansiblePlaybook(
                         playbook: "start-stop-services/gc.yaml",
-                        inventory: "hosts.ini",
+                        inventory: "start-stop-services/hosts.ini",
                         become: true,
                         extras: '-vvv',
                         forks: 1,
