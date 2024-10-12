@@ -30,14 +30,14 @@ pipeline {
                 }
             }
         }
-        stage('Yum update') {
+        stage('dnf update') {
             when {
                 expression { params.process == 'yum-update' }
             }
             steps {
                 ansiColor('xterm') {  // Wrap steps that need colored output
                     ansiblePlaybook(
-                        playbook: "install-packages/yum.yaml",
+                        playbook: "install-packages/dnf-update.yaml",
                         inventory: "install-packages/hosts.ini",
                         become: true,
                         extras: '-vvv',
