@@ -1,55 +1,54 @@
 pipeline {
-    options {
-      ansiColor('xterm')
-    }
     agent any
     
     parameters {
-        choice (name: 'procces', choices: ['install', 'uninstall'],)
+        choice (name: 'process', choices: ['install', 'uninstall'], description: 'Choose to install or uninstall')
     }
 
     stages {
         stage('Clean') {
             steps {
-                cleanWs()
+                cleanWs()  // Clean the workspace
             }
         }
-        stage('install'){
-        when {
-          expression {
-            params.vim == "install"
-          }
+
+        stage('Install') {
+            when {
+                expression { params.process == 'install' }
+            }
+            steps {
+                ansiColor('xterm') {  // Wrap steps that need colored output
+                    ansiblePlaybook(
+                        playbook: "ansible-scripts/install.yml",
+                        inventory: "hosts.ini",
+                        become: true,
+                        extras: '-vvv',
+                        forks: 1,
+                        disableHostKeyChecking: true,
+                        credentialsId: 'ssh-key',
+                        colorized: true
+                    )
+                }
+            }
         }
-            steps{
-            ansiblePlaybook(
-                playbook: "ansible-scripts/install.yml",
-                inventory: "hosts.ini",
-                become: 'yes',
-                extras: '-vvv',
-                forks: 1,
-                disableHostKeyChecking: true,
-                credentialsId: 'ssh-key',
-                colorized: true
-            )
-        }
-        }
-        stage('uninstall'){
-        when {
-          expression {
-            params.vim == "uninstall"
-          }
-        }
-            steps{
-            ansiblePlaybook(
-                playbook: "ansible-scripts/uninstall.yml",
-                inventory: "hosts.ini",
-                become: 'yes',
-                extras: '-vvv',
-                forks: 1,
-                disableHostKeyChecking: true,
-                credentialsId: 'ssh-key',
-                colorized: true
-          )
+
+        stage('Uninstall') {
+            when {
+                expression { params.process == 'uninstall' }
+            }
+            steps {
+                ansiColor('xterm') {  // Wrap steps that need colored output
+                    ansiblePlaybook(
+                        playbook: "ansible-scripts/uninstall.yml",
+                        inventory: "hosts.ini",
+                        become: true,
+                        extras: '-vvv',
+                        forks: 1,
+                        disableHostKeyChecking: true,
+                        credentialsId: 'ssh-key',
+                        colorized: true
+                    )
+                }
             }
         }
     }
