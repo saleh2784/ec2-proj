@@ -5,12 +5,12 @@
   become: yes
 
   tasks:
-    - name: Start the repair on Cassandra cluster
+    - name: Start the repair on the first Cassandra node
       shell: |
         cd /opt/apps/cassandra
         . /opt/apps/cassandra/.bash_profile
-        echo "running repair"
-        nohup nodetool -u k2view -pw Q1w2e3r4t5 repair --full -j 2 -pr >> repair.log 
+        echo "running repair on {{ inventory_hostname }}"
+        nohup nodetool -u k2view -pw Q1w2e3r4t5 repair --full -j 2 -pr >> /opt/apps/cassandra/repair.log 2>&1
       become_user: cassandra
       async: 1800  # 1800 seconds timeout
       poll: 0  # Do not poll
@@ -25,11 +25,11 @@
       delay: 10
       when: repair_task is defined and repair_task.ansible_job_id is defined
 
-    - name: Start the repair on other hosts
+    - name: Start the repair on other Cassandra nodes
       shell: |
         cd /opt/apps/cassandra
         . /opt/apps/cassandra/.bash_profile
-        echo "running repair"
-        nohup nodetool -u k2view -pw Q1w2e3r4t5 repair --full -j 2 -pr >> repair.log
+        echo "running repair on {{ inventory_hostname }}"
+        nohup nodetool -u k2view -pw Q1w2e3r4t5 repair --full -j 2 -pr >> /opt/apps/cassandra/repair.log 2>&1
       become_user: cassandra
       when: inventory_hostname != groups['cassandra'][0]  # Skip the first host since the repair already started there
