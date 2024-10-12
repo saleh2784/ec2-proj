@@ -11,6 +11,12 @@ pipeline {
                 cleanWs()  // Clean the workspace
             }
         }
+        stage('Check PATH') {
+            steps {
+                sh 'echo $PATH'
+                sh 'which ansible-playbook'
+            }
+        }
 
         stage('Install') {
             when {
@@ -19,7 +25,7 @@ pipeline {
             steps {
                 ansiColor('xterm') {  // Wrap steps that need colored output
                     ansiblePlaybook(
-                        playbook: "ansible-scripts/install.yml",
+                        playbook: "install.yml",
                         inventory: "hosts.ini",
                         become: true,
                         extras: '-vvv',
@@ -39,7 +45,7 @@ pipeline {
             steps {
                 ansiColor('xterm') {  // Wrap steps that need colored output
                     ansiblePlaybook(
-                        playbook: "ansible-scripts/uninstall.yml",
+                        playbook: "uninstall.yml",
                         inventory: "hosts.ini",
                         become: true,
                         extras: '-vvv',

@@ -1,0 +1,8 @@
+- hosts: Devops
+  become: yes
+
+  tasks:
+    - name: Install vim
+      yum:
+        name: vim
+        state: present
