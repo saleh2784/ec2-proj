@@ -95,41 +95,41 @@ pipeline {
                
 			}
 		}
-        stage('Install yq & Edit helm tag') {
+        // stage('Install yq & Edit helm tag') {
             
-			steps {
+		// 	steps {
 			   
-                // install yq :
-                sh (script : """ apt install wget -y""", returnStdout: false)
-                sh (script : """wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/bin/yq &&\
-                chmod +x /usr/bin/yq""", returnStdout: false)
-			    // need to check the path for the helm ## /home/jenkins/workspace/ec2/helm-lab
-                dir('/home/jenkins/workspace/ec2-app/helm-lab/') {
-                // show the current tag
-                sh (script : """ cat values.yaml | grep tag """)
-                // replace the new tag in the values.yaml
-                sh (script : """ yq -i \'.image.tag = \"${params.TAG}.${BUILD_NUMBER}\"\' values.yaml """, returnStdout: false)
-                // show the current tag
-                sh (script : """ cat values.yaml | grep tag """)
-                }
+        //         // install yq :
+        //         sh (script : """ apt install wget -y""", returnStdout: false)
+        //         sh (script : """wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/bin/yq &&\
+        //         chmod +x /usr/bin/yq""", returnStdout: false)
+		// 	    // need to check the path for the helm ## /home/jenkins/workspace/ec2/helm-lab
+        //         dir('/home/jenkins/workspace/ec2-app/helm-lab/') {
+        //         // show the current tag
+        //         sh (script : """ cat values.yaml | grep tag """)
+        //         // replace the new tag in the values.yaml
+        //         sh (script : """ yq -i \'.image.tag = \"${params.TAG}.${BUILD_NUMBER}\"\' values.yaml """, returnStdout: false)
+        //         // show the current tag
+        //         sh (script : """ cat values.yaml | grep tag """)
+        //         }
                
-			}
-		}
-        stage('Push to msater'){
-            steps{
-                // git branch: 'development', credentialsId: 'github', url: 'https://github.com/saleh2784/ec2-proj.git'
-                sh 'git config --local credential.helper "!f() { echo username=$GIT_AUTH_USR; echo password=$GIT_AUTH_PSW; }; f"'
-                dir('/home/jenkins/workspace/ec2-app/helm-lab/') {
-                // sh 'echo \"hello world\" > ss.txt'
-                // sh 'git add ss.txt'
-                sh 'git checkout master'
-                sh 'git add .'
-                sh 'git commit -m "new build version:"'
-                // sh 'git commit -am \"new build version ${params.TAG}.${BUILD_NUMBER}\"'
-                sh 'git push origin master'  
-                }  
-            }
-        }
+		// 	}
+		// }
+        // stage('Push to msater'){
+        //     steps{
+        //         // git branch: 'development', credentialsId: 'github', url: 'https://github.com/saleh2784/ec2-proj.git'
+        //         sh 'git config --local credential.helper "!f() { echo username=$GIT_AUTH_USR; echo password=$GIT_AUTH_PSW; }; f"'
+        //         dir('/home/jenkins/workspace/ec2-app/helm-lab/') {
+        //         // sh 'echo \"hello world\" > ss.txt'
+        //         // sh 'git add ss.txt'
+        //         sh 'git checkout master'
+        //         sh 'git add .'
+        //         sh 'git commit -m "new build version:"'
+        //         // sh 'git commit -am \"new build version ${params.TAG}.${BUILD_NUMBER}\"'
+        //         sh 'git push origin master'  
+        //         }  
+        //     }
+        // }
 
     }
 	post {
