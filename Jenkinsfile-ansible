@@ -1,49 +1,55 @@
 pipeline {
+    options {
+      ansiColor('xterm')
+    }
     agent any
-
-    environment {
-        ANSIBLE_INVENTORY = 'hosts.ini'  // Path to the Ansible inventory file
-        ANSIBLE_PLAYBOOK = 'playbook.yml'    // Path to the Ansible playbook
+    
+    parameters {
+        choice (name: 'procces', choices: ['install', 'uninstall'],)
     }
 
     stages {
-        // stage('Install Ansible') {
-        //     steps {
-        //         // Install Ansible if it’s not already installed (for Linux systems)
-        //         sh 'sudo dnf install epel-release && sudo dnf install ansible'
-        //     }
-        // }
-
-        stage('Run Ansible Ad-Hoc Commands') {
+        stage('Clean') {
             steps {
-                withCredentials([sshUserPrivateKey(credentialsId: 'ssh-key', keyFileVariable: 'identity', usernameVariable: 'userName')]) {
-                    // Run an ad-hoc Ansible command using the inventory and the SSH key
-                    ansibleCommand(
-                        installation: 'Ansible',    // Ansible installation configured in Jenkins
-                        playbook: null,             // No playbook, just ad-hoc command
-                        inventory: "${ANSIBLE_INVENTORY}",
-                        sudoUser: 'root',
-                        hostPattern: 'all',         // You can specify a specific host or group from the inventory
-                        credentialsId: 'ssh-key',   // Jenkins credentials to authenticate
-                        command: "uptime"           // Example: run the uptime command on remote hosts
-                    )
-                }
+                cleanWs()
             }
         }
-
-        stage('Run Ansible Playbook') {
-            steps {
-                withCredentials([sshUserPrivateKey(credentialsId: 'ssh-key', keyFileVariable: 'identity', usernameVariable: 'userName')]) {
-                    // Run the Ansible playbook
-                    ansiblePlaybook(
-                        installation: 'Ansible',   // Ansible installation configured in Jenkins
-                        playbook: "${ANSIBLE_PLAYBOOK}",
-                        inventory: "${ANSIBLE_INVENTORY}",
-                        credentialsId: 'ssh-key',  // Jenkins credentials for SSH key
-                        sudoUser: 'root',          // Optional, depending on the remote user privilege
-                        extras: '--verbose'        // Extra flags (optional)
-                    )
-                }
+        stage('install'){
+        when {
+          expression {
+            params.vim == "install"
+          }
+        }
+            steps{
+            ansiblePlaybook(
+                playbook: "ansible-scripts/install.yml",
+                inventory: "hosts.ini",
+                become: 'yes',
+                extras: '-vvv',
+                forks: 1,
+                disableHostKeyChecking: true,
+                credentialsId: 'ssh-key',
+                colorized: true
+            )
+        }
+        }
+        stage('uninstall'){
+        when {
+          expression {
+            params.vim == "uninstall"
+          }
+        }
+            steps{
+            ansiblePlaybook(
+                playbook: "ansible-scripts/uninstall.yml",
+                inventory: "hosts.ini",
+                become: 'yes',
+                extras: '-vvv',
+                forks: 1,
+                disableHostKeyChecking: true,
+                credentialsId: 'ssh-key',
+                colorized: true
+          )
             }
         }
     }

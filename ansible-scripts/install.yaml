@@ -1,0 +1,8 @@
+- hosts: Devops
+  become: yes
+  
+  tasks:
+  - name: install vim
+    block:
+      - command: sudo yum install vim -y
+    become: yes

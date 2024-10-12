@@ -1,0 +1,7 @@
+- hosts: Devops
+  become: yes
+  
+  tasks:
+  - name: uninstall vim
+    block:
+      - command: sudo yum remove vim -y
