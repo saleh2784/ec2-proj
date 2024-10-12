@@ -14,7 +14,6 @@ pipeline {
         stage('Check PATH') {
             steps {
                 sh 'echo $PATH'
-                sh 'which ansible-playbook'
             }
         }
 
@@ -25,7 +24,7 @@ pipeline {
             steps {
                 ansiColor('xterm') {  // Wrap steps that need colored output
                     ansiblePlaybook(
-                        playbook: "install.yml",
+                        playbook: "install.yaml",
                         inventory: "hosts.ini",
                         become: true,
                         extras: '-vvv',
@@ -45,7 +44,7 @@ pipeline {
             steps {
                 ansiColor('xterm') {  // Wrap steps that need colored output
                     ansiblePlaybook(
-                        playbook: "uninstall.yml",
+                        playbook: "uninstall.yaml",
                         inventory: "hosts.ini",
                         become: true,
                         extras: '-vvv',
