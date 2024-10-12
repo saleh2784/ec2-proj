@@ -11,6 +11,11 @@ pipeline {
                 cleanWs()  // Clean the workspace
             }
         }
+        stage('Get SCM') {
+            steps {
+                git branch: 'master', url: 'https://github.com/saleh2784/ec2-proj.git'
+            }
+        }
         stage('Check PATH') {
             steps {
                 sh 'echo $PATH'
