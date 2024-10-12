@@ -2,7 +2,7 @@ pipeline {
     agent any
     
     parameters {
-        choice (name: 'process', choices: ['start', 'stop'], description: 'Choose to start or stop services')
+        choice (name: 'process', choices: ['start', 'stop', 'repair', 'gc'], description: 'Choose to start or stop services')
     }
 
     stages {
@@ -50,6 +50,44 @@ pipeline {
                 ansiColor('xterm') {  // Wrap steps that need colored output
                     ansiblePlaybook(
                         playbook: "start-stop-services/stop.yaml",
+                        inventory: "hosts.ini",
+                        become: true,
+                        extras: '-vvv',
+                        forks: 1,
+                        disableHostKeyChecking: true,
+                        credentialsId: 'ssh-key',
+                        colorized: true
+                    )
+                }
+            }
+        }
+        stage('Run Reapir') {
+            when {
+                expression { params.process == 'repair' }
+            }
+            steps {
+                ansiColor('xterm') {  // Wrap steps that need colored output
+                    ansiblePlaybook(
+                        playbook: "start-stop-services/repair.yaml",
+                        inventory: "hosts.ini",
+                        become: true,
+                        extras: '-vvv',
+                        forks: 1,
+                        disableHostKeyChecking: true,
+                        credentialsId: 'ssh-key',
+                        colorized: true
+                    )
+                }
+            }
+        }
+        stage('Run GC') {
+            when {
+                expression { params.process == 'gc' }
+            }
+            steps {
+                ansiColor('xterm') {  // Wrap steps that need colored output
+                    ansiblePlaybook(
+                        playbook: "start-stop-services/gc.yaml",
                         inventory: "hosts.ini",
                         become: true,
                         extras: '-vvv',

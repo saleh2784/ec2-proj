@@ -1,0 +1,41 @@
+---
+- name: Run Garbage Collector on Cassandra cluster
+  hosts: cassandra
+  serial: 1
+  become: yes
+
+  tasks:
+    - name: Run Garbage Collector on Cassandra node
+      shell: |
+        cd /opt/apps/cassandra
+        . /opt/apps/cassandra/.bash_profile
+        echo "Running Garbage Collector"
+        nohup nodetool -u k2view -pw Q1w2e3r4t5 garbagecollect >> garbage-collect.log
+      become_user: cassandra
+      async: 1800  # 1800 seconds timeout
+      poll: 0      # Do not poll for completion
+      register: gc_task
+
+    - name: Wait for Garbage Collector to finish
+      async_status:
+        jid: "{{ gc_task.ansible_job_id }}"
+      register: gc_result
+      until: gc_result.finished
+      retries: 180  # Approximately 30 minutes with 10-second polling
+      delay: 10
+      when: gc_task is defined and gc_task.ansible_job_id is defined
+
+    - name: Continue with tasks on other hosts
+      hosts: cassandra
+      serial: 1
+      become: yes
+      when: inventory_hostname != groups['cassandra'][0]  # Skip the first host since the garbage collector already started there
+
+  tasks:
+    - name: Run Garbage Collector on Cassandra node
+      shell: |
+        cd /opt/apps/cassandra
+        . /opt/apps/cassandra/.bash_profile
+        echo "Running Garbage Collector"
+        nohup nodetool -u k2view -pw Q1w2e3r4t5 garbagecollect >> garbage-collect.log
+      become_user: cassandra
