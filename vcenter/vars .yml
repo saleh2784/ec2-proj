@@ -1,0 +1,23 @@
+vcenter_hostname: "vcenter.example.com"
+vcenter_datacenter: "Test_datacenter"
+vcenter_username: "Administrator@vsphere.local"
+vcenter_password: "password"
+vcenter_validate_certs: false
+vcenter_cluster: " Test_cluster"
+vm_name: "Ansible_test"
+vm_guest_id: "other4xLinux64Guest"
+vm_disk_gb: 20
+vm_disk_type: "thin"
+vm_disk_datastore: "Test_datastore"
+vm_hw_ram_mb : 4096
+vm_hw_cpu_n: 4
+vm_hw_scsi: "paravirtual"
+vm_net_name: "VLAN10"
+vm_net_type: "vmxnet3"
+vm_ip: "192.168.1.10"
+vm_net_mask: "255.255.255.0"
+vm_net_gw: "192.168.1.1"
+vm_net_dns: "8.8.8.8"
+vcenter_destination_folder: "Ansible"
+vm_state: "poweredon"
+vm_template: "Rocky_9_template"

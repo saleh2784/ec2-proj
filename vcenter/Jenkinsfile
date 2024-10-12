@@ -1,0 +1,27 @@
+pipeline {
+    agent any 
+
+    parameters {
+        string(name: 'VCENTER_HOSTNAME', defaultValue: 'vcenter.example.com', description: 'Enter the vCenter hostname')
+        string(name: 'VM_NAME', defaultValue: 'Ansible_test', description: 'Name of the VM')
+        string(name: 'VM_IP', defaultValue: '192.168.1.10', description: 'Static IP for the VM')
+        choice(name: 'VM_MEMORY', choices: ['2048', '4096', '8192', '16384'], description: 'Select memory for the VM (MB)')
+        choice(name: 'VM_CPU', choices: ['1', '2', '4', '8'], description: 'Select number of CPUs for the VM')
+        choice(name: 'VM_DISK_GB', choices: ['20', '40', '80', '160'], description: 'Select disk size for the VM (GB)')
+    }
+
+    stages {
+        stage('Create VM') {
+            steps {
+                script {
+                    // Retrieve the vCenter password from Jenkins credentials
+                    withCredentials([string(credentialsId: 'vcenter_password', variable: 'VCENTER_PASSWORD')]) {
+                        sh """
+                            ansible-playbook /path/to/your/playbook.yml -i localhost, --extra-vars "vcenter_hostname=${params.VCENTER_HOSTNAME} vcenter_username='Administrator@vsphere.local' vcenter_password='$VCENTER_PASSWORD' vcenter_datacenter='Test_datacenter' vm_name=${params.VM_NAME} vm_ip=${params.VM_IP} vm_hw_ram_mb=${params.VM_MEMORY} vm_hw_cpu_n=${params.VM_CPU} vm_disk_gb=${params.VM_DISK_GB} vm_disk_type='thin' vm_disk_datastore='Test_datastore' vm_hw_scsi='paravirtual' vm_net_name='VLAN10' vm_net_type='vmxnet3' vm_net_mask='255.255.255.0' vm_net_gw='192.168.1.1' vm_net_dns='8.8.8.8'"
+                        """
+                    }
+                }
+            }
+        }
+    }
+}
