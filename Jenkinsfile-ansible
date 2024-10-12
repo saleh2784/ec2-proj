@@ -1,0 +1,50 @@
+pipeline {
+    agent any
+
+    environment {
+        ANSIBLE_INVENTORY = 'inventory.ini'  // Path to the Ansible inventory file
+        ANSIBLE_PLAYBOOK = 'playbook.yml'    // Path to the Ansible playbook
+    }
+
+    stages {
+        // stage('Install Ansible') {
+        //     steps {
+        //         // Install Ansible if it’s not already installed (for Linux systems)
+        //         sh 'sudo dnf install epel-release && sudo dnf install ansible'
+        //     }
+        // }
+
+        stage('Run Ansible Ad-Hoc Commands') {
+            steps {
+                withCredentials([sshUserPrivateKey(credentialsId: 'ssh-key', keyFileVariable: 'identity', usernameVariable: 'userName')]) {
+                    // Run an ad-hoc Ansible command using the inventory and the SSH key
+                    ansibleCommand(
+                        installation: 'Ansible',    // Ansible installation configured in Jenkins
+                        playbook: null,             // No playbook, just ad-hoc command
+                        inventory: "${ANSIBLE_INVENTORY}",
+                        sudoUser: 'root',
+                        hostPattern: 'all',         // You can specify a specific host or group from the inventory
+                        credentialsId: 'ssh-key',   // Jenkins credentials to authenticate
+                        command: "uptime"           // Example: run the uptime command on remote hosts
+                    )
+                }
+            }
+        }
+
+        stage('Run Ansible Playbook') {
+            steps {
+                withCredentials([sshUserPrivateKey(credentialsId: 'ssh-key', keyFileVariable: 'identity', usernameVariable: 'userName')]) {
+                    // Run the Ansible playbook
+                    ansiblePlaybook(
+                        installation: 'Ansible',   // Ansible installation configured in Jenkins
+                        playbook: "${ANSIBLE_PLAYBOOK}",
+                        inventory: "${ANSIBLE_INVENTORY}",
+                        credentialsId: 'ssh-key',  // Jenkins credentials for SSH key
+                        sudoUser: 'root',          // Optional, depending on the remote user privilege
+                        extras: '--verbose'        // Extra flags (optional)
+                    )
+                }
+            }
+        }
+    }
+}
