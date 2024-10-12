@@ -6,11 +6,6 @@ pipeline {
     }
 
     stages {
-        stage('Clean') {
-            steps {
-                cleanWs()  // Clean the workspace
-            }
-        }
         stage('Install') {
             when {
                 expression { params.process == 'install' }
