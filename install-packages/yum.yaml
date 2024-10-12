@@ -1,0 +1,12 @@
+---
+- hosts: Devops
+  become: yes
+  tasks:
+    - name: Update all packages to the latest version
+      yum:
+        name: "*"
+        state: latest
+
+    - name: Clean all cached files
+      yum:
+        name: clean all
