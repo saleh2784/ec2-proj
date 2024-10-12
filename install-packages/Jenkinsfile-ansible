@@ -29,8 +29,8 @@ pipeline {
             steps {
                 ansiColor('xterm') {  // Wrap steps that need colored output
                     ansiblePlaybook(
-                        playbook: "install.yaml",
-                        inventory: "hosts.ini",
+                        playbook: "install-packages/install.yaml",
+                        inventory: "install-packages/hosts.ini",
                         become: true,
                         extras: '-vvv',
                         forks: 1,
@@ -49,8 +49,8 @@ pipeline {
             steps {
                 ansiColor('xterm') {  // Wrap steps that need colored output
                     ansiblePlaybook(
-                        playbook: "uninstall.yaml",
-                        inventory: "hosts.ini",
+                        playbook: "install-packages/uninstall.yaml",
+                        inventory: "install-packages/hosts.ini",
                         become: true,
                         extras: '-vvv',
                         forks: 1,
