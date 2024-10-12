@@ -6,6 +6,7 @@
 
   tasks:
     - name: Start the repair on the first Cassandra node
+      register: output
       shell: |
         cd /opt/apps/cassandra
         . /opt/apps/cassandra/.bash_profile
@@ -14,7 +15,8 @@
       become_user: cassandra
       # async: 1800  # 1800 seconds timeout
       # poll: 0  # Do not poll
-      register: repair_task
+      - debug:
+        var: output.stdout_lines
 
     # - name: Wait for repair to finish
     #   async_status:
