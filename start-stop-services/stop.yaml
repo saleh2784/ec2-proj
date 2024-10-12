@@ -1,0 +1,124 @@
+---
+############################# stop Fabric ###################################
+
+- name: Stop Fabric
+  hosts: fabric
+  become: true
+
+  tasks:
+    - name: Stop Fabric service
+      register: output
+      shell: |
+        cd /opt/apps/fabric
+        . /opt/apps/fabric/.bash_profile
+        k2fabric stop
+        sleep 10
+        jps
+      become_user: fabric
+
+    - debug:
+        var: output.stdout_lines
+
+############################## stop Kafka ###################################
+
+- name: stop-kafka service
+  hosts: kafka
+  serial: 1
+
+  tasks:
+    - name: stop-kafka service
+      register: output
+      shell: |
+        cd /opt/apps/kafka
+        . /opt/apps/kafka/.bash_profile
+        echo "stop-kafka service"
+        kafka-server-stop
+        sleep 10
+        jps
+      become: yes
+      become_user: kafka
+
+    - debug:
+        var: output.stdout_lines
+
+############################## stop Zookeeper ###################################
+
+- name: stop-zookeeper service
+  hosts: zookeeper
+  serial: 1
+
+  tasks:
+    - name: stop-zookeeper service
+      register: output
+      shell: |
+        cd /opt/apps/kafka
+        . /opt/apps/kafka/.bash_profile
+        echo "stop-zookeeper service"
+        zookeeper-server-stop
+        sleep 10
+        jps
+      become: yes
+      become_user: kafka
+
+    - debug:
+        var: output.stdout_lines
+
+# ############################## stop redis ###################################
+
+# - name: Start redis
+#   hosts: redis
+#   become: yes
+
+#   tasks:
+#     - name: Start redis service
+#       register: output
+#       shell: |
+#         echo "start redis"
+#         cd ~/apps/redis/src/
+#         ./redis-cli shutdown
+
+#       become_user: k2view
+
+#     - debug:
+#         var: output.stdout_lines
+
+
+# ############################## stop postgres ###################################
+
+# - name: Start postgres
+#   hosts: postgres
+#   become: yes
+
+#   tasks:
+#     - name: Start postgres service
+#       register: output
+#       shell: |
+#         cd /opt/apps/pgsql
+#         echo "start postgres"
+#         cd bin
+#         ./pg_ctl -D /opt/apps/pgsql/data -l logfile stop
+
+#       become_user: pgsql
+
+#     - debug:
+#         var: output.stdout_lines
+
+############################## stop Cassandra ###################################
+
+- name: Stop Cassandra
+  hosts: cassandra
+  serial: 1
+  become: true
+
+  tasks:
+    - name: Stop Cassandra service
+      register: output
+      shell: |
+        cd /opt/apps/cassandra
+        . /opt/apps/cassandra/.bash_profile
+        stop-server
+        
+      become_user: cassandra
+
+    - debug:
+        var: output.stdout_lines

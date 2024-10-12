@@ -1,0 +1,298 @@
+---
+##########################################################
+            ## Check if cassandra is running ##
+##########################################################
+- name: Ensure cassandra Service is Running
+  hosts: cassandra
+  become: yes
+  become_user: cassandra
+
+  tasks:
+    - name: Check if cassandra is running
+      shell: ps aux | grep -v grep | grep -i org.apache.cassandra.service.CassandraDaemon
+      register: cassandra_process_count
+      ignore_errors: true  # Ignore errors if no process is found
+    
+    - name: Print the exit code for debugging
+      debug:
+        var: cassandra_process_count.rc
+
+############################## starting Cassandra_1  ###################################
+
+- name: Start Cassandra services
+  hosts: cassandra
+  serial: 1
+  become: yes
+
+  tasks:
+    - name: Start Cassandra service for seeds nodes
+      register: output
+      shell: |
+        cd /opt/apps/cassandra
+        . /opt/apps/cassandra/.bash_profile
+        echo "sarting cassandra"
+        nohup cassandra &
+        sleep 30
+        nodetool -u k2view -pw Q1w2e3r4t5 status
+      when: cassandra_process_count.rc != 0
+      become_user: cassandra
+
+    - debug:
+        var: output.stdout_lines
+
+############################## starting Cassandra  ###################################
+
+# - name: Start Cassandra services
+#   hosts: cassandra
+#   serial: 1
+#   become: yes
+
+#   tasks:
+#     - name: Start Cassandra service for seeds nodes
+#       register: output
+#       shell: |
+#         cd /opt/apps/cassandra
+#         . /opt/apps/cassandra/.bash_profile
+#         echo "sarting cassandra"
+#         nohup cassandra &
+#         sleep 30
+#         nodetool -u k2view -pw Q1w2e3r4t5 status
+      
+#       become_user: cassandra
+
+#     - debug:
+#         var: output.stdout_lines
+
+##########################################################
+            ## Check if zookeeper is running ##
+##########################################################
+- name: Ensure zookeeper Service is Running
+  hosts: zookeeper
+  become: yes
+  become_user: kafka
+
+  tasks:
+    - name: Check if zookeeper is running
+      shell: ps aux | grep -v grep | grep QuorumPeerMain
+      register: zookeeper_process_count
+      ignore_errors: true  # Ignore errors if no process is found
+    
+    - name: Print the exit code for debugging
+      debug:
+        var: zookeeper_process_count.rc
+
+############################## starting zookeeper ###################################
+
+- name: start-zookeeper service
+  hosts: zookeeper
+  serial: 1
+
+  tasks:
+    - name: start-zookeeper and kafka services
+      register: output
+      shell: |
+        cd /opt/apps/kafka
+        . /opt/apps/kafka/.bash_profile
+        echo "start-zookeeper service"
+        $K2_HOME/kafka/bin/zookeeper-server-start -daemon $K2_HOME/kafka/zookeeper.properties
+        sleep 10
+        jps
+      when: zookeeper_process_count.rc != 0
+      become: yes
+      become_user: kafka
+
+    - debug:
+        var: output.stdout_lines
+
+##########################################################
+            ## Check if Kafka is running ##
+##########################################################
+
+- name: Ensure Kafka Service is Running
+  hosts: kafka
+  become: yes
+  become_user: kafka
+
+  tasks:
+    - name: Check if Kafka is running
+      shell: ps aux | grep -v grep | grep SupportedKafka
+      register: kafka_process_count
+      ignore_errors: true  # Ignore errors if no process is found
+    
+    - name: Print the exit code for debugging
+      debug:
+        var: kafka_process_count.rc
+
+############################## starting kafka ###################################
+
+- name: start-kafka service
+  hosts: kafka
+  serial: 1
+
+  tasks:
+    - name: start-kafka service
+      register: output
+      shell: |
+        cd /opt/apps/kafka
+        . /opt/apps/kafka/.bash_profile
+        echo "start-kafka service"
+        $K2_HOME/kafka/bin/kafka-server-start -daemon $K2_HOME/kafka/server.properties
+
+      when: kafka_process_count.rc != 0
+      become: yes
+      become_user: kafka
+
+    - debug:
+        var: output.stdout_lines
+
+############################## Verify SupportedKafka Service again ###################################
+
+- name: Ensure Kafka Service is Running
+  hosts: kafka
+  become: yes
+  become_user: kafka
+##########################################################
+            ## Check if Kafka is running ##
+##########################################################
+  tasks:
+    - name: Check if Kafka is running
+      shell: ps aux | grep -v grep | grep SupportedKafka
+      register: kafka_process_count
+      ignore_errors: true  # Ignore errors if no process is found
+    
+    - name: Print the exit code for debugging
+      debug:
+        var: kafka_process_count.rc
+##########################################################
+            ## Start Kafka if not running ##
+##########################################################
+    - name: Start Kafka if not running
+      shell: |
+        cd /opt/apps/kafka
+        . /opt/apps/kafka/.bash_profile
+        echo "Starting Kafka service"
+        $K2_HOME/kafka/bin/kafka-server-start -daemon $K2_HOME/kafka/server.properties
+      when: kafka_process_count.rc != 0
+
+##########################################################
+            ## Wait for Kafka to start ##
+##########################################################
+    - name: Wait for Kafka to start
+      wait_for:
+        host: localhost
+        port: 9092
+        state: started
+      when: kafka_process_count.rc == "1"  ## kafka-up=0 & kafka-down=1
+      retries: 10
+      delay: 5
+##########################################################
+            ## check the Kafka after starting ##
+##########################################################
+    - name: Check Kafka status after starting
+      shell: ps aux | grep -v grep | grep SupportedKafka
+      register: kafka_process_count_after_start
+      ignore_errors: true  # Ignore errors if no process is found
+
+    - name: Print the exit code for debugging
+      debug:
+        var: kafka_process_count_after_start.rc
+
+    - name: Fail if Kafka is still not running
+      fail:
+        msg: "Failed to start Kafka service"
+      when: kafka_process_count_after_start.rc == "1"
+
+############################## starting postgres ###################################
+
+# - name: Start postgres
+#   hosts: postgres
+#   become: yes
+ 
+#   tasks:
+#     - name: Start postgres service
+#       register: output
+#       shell: |
+#         cd /opt/apps/pgsql
+#         echo "start postgres"
+#         /opt/apps/pgsql/bin/pg_ctl -D /opt/apps/pgsql/data -l /opt/apps/pgsql/logfile start
+ 
+#       become_user: pgsql
+ 
+#     - debug:
+#         var: output.stdout_lines
+        
+############################## starting fabric ###################################
+
+##########################################################
+            ## Check if fabric is running ##
+##########################################################
+
+- name: Ensure fabric Service is Running
+  hosts: fabric
+  become: yes
+  become_user: fabric
+
+  tasks:
+    - name: Check if fabric is running
+      shell: ps aux | grep -v grep | grep Boot
+      register: fabric_process_count
+      ignore_errors: true  # Ignore errors if no process is found
+    
+    - name: Print the exit code for debugging
+      debug:
+        var: fabric_process_count.rc
+
+############################## starting fabric ###################################
+
+- name: Start Fabric
+  hosts: fabric
+  become: yes
+  become_user: fabric 
+
+  tasks:
+    - name: Start Fabric service
+      register: output
+      shell: |
+        cd /opt/apps/fabric
+        . /opt/apps/fabric/.bash_profile
+        echo "start fabric"
+        nohup k2fabric start &
+
+      when: fabric_process_count.rc != 0
+
+    - debug:
+        var: output.stdout_lines
+
+    - name: Wait for Fabric nodes to start with retry
+      register: output
+      wait_for:
+        host: "{{ inventory_hostname }}"
+        port: 3213
+        delay: 10
+        timeout: 60
+        state: started
+ 
+    - debug:
+        var: output.stdout_lines
+
+
+############################## starting redis ###################################
+
+# - name: Start redis
+#   hosts: redis
+#   become: yes
+ 
+#   tasks:
+#     - name: Start redis service
+#       register: output
+#       shell: |
+#         echo "start redis"
+#         cd ~/apps/redis/src/
+#         ./redis-server ../redis.conf &
+ 
+#       become_user: k2view
+ 
+#     - debug:
+#         var: output.stdout_lines
+
+

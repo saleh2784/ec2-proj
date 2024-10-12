@@ -1,0 +1,65 @@
+pipeline {
+    agent any
+    
+    parameters {
+        choice (name: 'process', choices: ['start', 'stop'], description: 'Choose to start or stop services')
+    }
+
+    stages {
+        stage('Clean') {
+            steps {
+                cleanWs()  // Clean the workspace
+            }
+        }
+        stage('Get SCM') {
+            steps {
+                git branch: 'master', url: 'https://github.com/saleh2784/ec2-proj.git'
+            }
+        }
+        stage('Check PATH') {
+            steps {
+                sh 'echo $PATH'
+            }
+        }
+
+        stage('Start services') {
+            when {
+                expression { params.process == 'start' }
+            }
+            steps {
+                ansiColor('xterm') {  // Wrap steps that need colored output
+                    ansiblePlaybook(
+                        playbook: "start-stop-services/start.yaml",
+                        inventory: "start-stop-services/hosts.ini",
+                        become: true,
+                        extras: '-vvv',
+                        forks: 1,
+                        disableHostKeyChecking: true,
+                        credentialsId: 'ssh-key',
+                        colorized: true
+                    )
+                }
+            }
+        }
+
+        stage('Stop services') {
+            when {
+                expression { params.process == 'stop' }
+            }
+            steps {
+                ansiColor('xterm') {  // Wrap steps that need colored output
+                    ansiblePlaybook(
+                        playbook: "start-stop-services/stop.yaml",
+                        inventory: "hosts.ini",
+                        become: true,
+                        extras: '-vvv',
+                        forks: 1,
+                        disableHostKeyChecking: true,
+                        credentialsId: 'ssh-key',
+                        colorized: true
+                    )
+                }
+            }
+        }
+    }
+}
