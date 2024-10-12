@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        ANSIBLE_INVENTORY = 'inventory.ini'  // Path to the Ansible inventory file
+        ANSIBLE_INVENTORY = 'hosts.ini'  // Path to the Ansible inventory file
         ANSIBLE_PLAYBOOK = 'playbook.yml'    // Path to the Ansible playbook
     }
 
