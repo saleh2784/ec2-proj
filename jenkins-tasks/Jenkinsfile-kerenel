@@ -1,0 +1,42 @@
+pipeline {
+    agent any
+    parameters {
+        choice(name: 'HOST', choices: ['10.50.10.5', '10.50.10.19', '10.50.10.7'], description: 'Select the target host')
+        string(name: 'USER_NAME', defaultValue: 'root')
+    }
+    stages {
+        stage('Connect to Host') {
+            steps {
+                // Use ssh-agent to manage the SSH key
+                sshagent(['ssh-key']) {
+                    // Run a shell command on the remote host
+                    sh """
+                        ssh -o StrictHostKeyChecking=no ${params.USER_NAME}@${params.HOST} 'hostname -I'
+                    """
+                }
+            }
+        }
+        stage('check kernel') {
+            steps {
+                // Use ssh-agent to manage the SSH key
+                sshagent(['ssh-key']) {
+                    // Run a shell command on the remote host
+                    sh """
+                        ssh -o StrictHostKeyChecking=no ${params.USER_NAME}@${params.HOST} 'uname -r'
+                    """
+                }
+            }
+        }
+        stage('check new kernel') {
+            steps {
+                // Use ssh-agent to manage the SSH key
+                sshagent(['ssh-key']) {
+                    // Run a shell command on the remote host
+                    sh """
+                        ssh -o StrictHostKeyChecking=no ${params.USER_NAME}@${params.HOST} "rpm -qa --last | grep 'kernel-[0-9]' | sed -n '1p' | sed 's/^.*kernel-//' | grep -Eo '^[^ ]+'"
+                    """
+                }
+            }
+        }
+    }
+}

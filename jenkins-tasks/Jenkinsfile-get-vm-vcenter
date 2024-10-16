@@ -1,0 +1,32 @@
+pipeline {
+    agent any
+    stages {
+        stage('Checkout Repository') {
+            steps {
+                // Checkout the Git repository using the github-PAT credentials
+                git credentialsId: 'PAT-GIT', branch: 'main', url: 'https://github.com/saleh2784/jenkins-lab.git'
+            }
+        }
+
+        stage('Run Ansible Playbook') {
+            steps {
+                script {
+                    // Ensure the inventory file is configured correctly
+                    def inventoryFile = 'hosts.ini'  // Update with your actual path to the inventory file
+                    def playbookFile = 'get-vm-ansible.yml'  // Update with the actual path to your playbook file
+
+                    // Run the Ansible playbook
+                    def ansibleCmd = "ansible-playbook -i ${inventoryFile} ${playbookFile} -vvv --extra-vars 'ansible_user=${env.VCENTER_USERNAME} ansible_password=${env.VCENTER_PASSWORD}'"
+                    sh ansibleCmd
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            // Clean up workspace
+            cleanWs()
+        }
+    }
+}

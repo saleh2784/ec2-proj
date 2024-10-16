@@ -1,0 +1,44 @@
+pipeline {
+    agent any
+    parameters {
+        string(name: 'HOST', defaultValue: '10.50.10.5')
+        string(name: 'USER_NAME', defaultValue: 'root')
+    }
+    stages {
+        stage('vailadations') {
+            steps {
+                // Use ssh-agent to manage the SSH key
+                sshagent(['ssh-key']) {
+                    // Run a shell command on the remote host
+                    sh """
+                        ssh -o StrictHostKeyChecking=no ${params.USER_NAME}@${params.HOST} 'hostname -I'
+                    """
+                }
+            }
+        }
+        
+        stage('ping the host') {
+            steps {
+                // Use ssh-agent to manage the SSH key
+                sshagent(['ssh-key']) {
+                    // Run a shell command on the remote host
+                    sh """
+                        ssh -o StrictHostKeyChecking=no ${params.USER_NAME}@${params.HOST} 'uname -a'
+                    """
+                }
+            }
+        }
+        
+        stage('date') {
+            steps {
+                // Use ssh-agent to manage the SSH key
+                sshagent(['ssh-key']) {
+                    // Run a shell command on the remote host
+                    sh """
+                        ssh -o StrictHostKeyChecking=no ${params.USER_NAME}@${params.HOST} 'date'
+                    """
+                }
+            }
+        }
+    }
+}
